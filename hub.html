@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caryn &amp; Lars · Planning Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4efe6; --panel:#fffdf8; --panel2:#faf5ec;
+    --ink:#4a4034; --muted:#8d8170; --bronze:#a9885f; --bronze-d:#8a6f4a;
+    --sand:#e8dcc8; --line:#e4d9c6; --sage:#9aa882; --gold:#c9a25a;
+    --ok:#7e9a5e; --warn:#c79a4e; --pend:#b08a8a;
+    --shadow:0 8px 30px rgba(74,64,52,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Josefin Sans',system-ui,sans-serif;font-weight:300;line-height:1.55}
+  h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:500;margin:0 0 .35em;letter-spacing:.01em}
+  h1{font-size:1.9rem}h2{font-size:1.5rem}h3{font-size:1.2rem}
+  .script{font-family:'Great Vibes',cursive;font-weight:400}
+  a{color:var(--bronze-d)}
+  .layout{display:flex;min-height:100vh}
+  /* sidebar */
+  .side{width:248px;flex:0 0 248px;background:linear-gradient(180deg,#fffdf8,#f7f1e6);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 0}
+  .brand{padding:0 22px 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
+  .brand .names{font-family:'Great Vibes',cursive;font-size:2rem;color:var(--bronze-d);line-height:1}
+  .brand .sub{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  .countdown{margin:10px 22px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .countdown .big{font-family:'Cormorant Garamond',serif;font-size:2.1rem;color:var(--bronze-d);line-height:1}
+  .countdown .lbl{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  nav{display:flex;flex-direction:column;padding:4px 12px}
+  nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;cursor:pointer;
+    font-family:'Josefin Sans',sans-serif;font-size:.92rem;color:var(--ink);padding:9px 12px;border-radius:9px;transition:.15s}
+  nav button:hover{background:var(--sand)}
+  nav button.active{background:var(--bronze);color:#fff;font-weight:400}
+  nav button .ico{width:18px;text-align:center;opacity:.85}
+  .navnote{padding:14px 22px;font-size:.68rem;color:var(--muted);line-height:1.5;border-top:1px solid var(--line);margin-top:8px}
+  /* main */
+  main{flex:1;padding:34px 40px 80px;max-width:1100px}
+  .tab{display:none;animation:fade .25s ease}
+  .tab.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .pagehead{margin-bottom:20px}
+  .pagehead .eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--bronze)}
+  .pagehead h1{margin:.1em 0 .15em}
+  .pagehead p{margin:0;color:var(--muted);max-width:70ch}
+  /* cards */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .card h3{color:var(--bronze-d);display:flex;align-items:center;gap:8px}
+  .card.tight{padding:14px 16px}
+  .stat{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--bronze-d);line-height:1}
+  .stat-lbl{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:.92rem}
+  .kv dt{color:var(--muted)}
+  .kv dd{margin:0;text-align:right}
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{padding:7px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:12px}
+  ul.clean li:last-child{border-bottom:0}
+  ul.dot{margin:.2em 0 .2em 1.1em;padding:0}
+  ul.dot li{margin:.3em 0}
+  .pill{display:inline-block;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px;font-weight:500}
+  .pill.ok{background:#e8efdd;color:#5d7740}
+  .pill.warn{background:#f6ecd6;color:#9a7526}
+  .pill.pend{background:#f1e4e4;color:#9a6a6a}
+  .pill.todo{background:#eee7da;color:#897a60}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{font-family:'Josefin Sans';font-weight:500;color:var(--muted);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase}
+  td.num,th.num{text-align:right;white-space:nowrap}
+  tr.total td{border-top:2px solid var(--bronze);font-weight:500;font-size:1rem}
+  .muted{color:var(--muted)}
+  .sec{margin-top:26px}
+  .sec h2{border-bottom:1px solid var(--line);padding-bottom:6px;color:var(--ink)}
+  /* timeline */
+  .tl{position:relative;margin:10px 0 0 8px;padding-left:24px;border-left:2px solid var(--sand)}
+  .tl .ev{position:relative;padding:0 0 18px 4px}
+  .tl .ev::before{content:"";position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--bronze);border:3px solid var(--panel)}
+  .tl .ev .t{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--bronze-d)}
+  .tl .ev .d{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  /* checklist */
+  .prog{height:10px;background:var(--sand);border-radius:999px;overflow:hidden;margin:6px 0 2px}
+  .prog > i{display:block;height:100%;background:linear-gradient(90deg,var(--sage),var(--bronze));width:0;transition:width .4s}
+  .check{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .check:last-child{border-bottom:0}
+  .check input{margin-top:4px;width:17px;height:17px;accent-color:var(--bronze);cursor:pointer;flex:0 0 auto}
+  .check label{cursor:pointer;flex:1}
+  .check.done label{text-decoration:line-through;color:var(--muted)}
+  .check .del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.9rem;opacity:.5}
+  .check .del:hover{opacity:1;color:var(--pend)}
+  .addrow{display:flex;gap:8px;margin-top:10px}
+  .addrow input{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;background:var(--panel)}
+  .btn{background:var(--bronze);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit;font-size:.85rem}
+  .btn:hover{background:var(--bronze-d)}
+  .btn.ghost{background:none;color:var(--bronze-d);border:1px solid var(--line)}
+  iframe{width:100%;height:560px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .note{background:var(--panel2);border-left:3px solid var(--bronze);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.88rem;color:var(--muted);margin:8px 0}
+  .tag{font-size:.7rem;color:var(--muted)}
+  .linkbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .topbar{display:none}
+  @media(max-width:860px){
+    .layout{flex-direction:column}
+    .side{position:static;width:auto;height:auto;flex:none;display:none}
+    .side.open{display:block}
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+    .topbar .names{font-family:'Great Vibes',cursive;font-size:1.5rem;color:var(--bronze-d)}
+    main{padding:20px}
+    .g2,.g3,.g4{grid-template-columns:1fr}
+  }
+  @media print{.side,.topbar,.addrow,.linkbtns{display:none}main{max-width:none}.tab{display:block!important}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="topbar">
+    <span class="names">Caryn &amp; Lars</span>
+    <button class="btn ghost" onclick="document.querySelector('.side').classList.toggle('open')">☰ Menu</button>
+  </div>
+
+  <aside class="side">
+    <div class="brand">
+      <div class="names">Caryn &amp; Lars</div>
+      <div class="sub">Planning Command Center</div>
+    </div>
+    <div class="countdown">
+      <div class="big" id="cdDays">—</div>
+      <div class="lbl">days to “I do”</div>
+      <div class="lbl" style="margin-top:6px;color:var(--bronze-d)">Sat · 24 July 2027</div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="navnote">Private planning hub. Your checklist progress is saved in this browser. Tell Claude what to update and we iterate.</div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<script>
+/* ============================ DATA ============================ */
+const WEDDING_DATE = "2027-07-24T16:00:00+01:00";
+
+const TABS = [
+  ["dashboard","Dashboard","◆"],
+  ["timeline","Planning Timeline","❧"],
+  ["dayof","Day-of Schedule","☼"],
+  ["checklist","Checklist & Tasks","✓"],
+  ["budget","Budget","€"],
+  ["venue","Venue","⌂"],
+  ["floral","Floral & Design","✿"],
+  ["dj","DJ & Music","♪"],
+  ["photo","Photographer","◉"],
+  ["seating","Seating Plans","▦"],
+  ["guests","Guests","♥"],
+  ["coordinator","Day-of Coordinator","✶"],
+];
+
+/* default checklist — grouped. Each: [text, doneByDefault] */
+const CHECKLIST = {
+  "Vendors & Bookings":[
+    ["Venue confirmed — Marriott Praia D'El Rey (24 Jul 2027)",true],
+    ["Photographer — Lia Rodrigues — BOOKED, deposit paid",true],
+    ["DJ — Bruno (FixTheMusic) — BOOKED, deposit paid",true],
+    ["Same-day coordinator — Cátia (Ode Stories) — confirmed",true],
+    ["Floral & design — Helart: confirm final quote & pay 50% deposit",false],
+    ["DJ balance €1,040 — due by 9 Jun 2027",false],
+    ["Photographer 50% (€937.50) — due ~17 Jul 2027",false],
+    ["Photographer — sign contract + fill questionnaire + book engagement session",false],
+    ["Officiant / celebrant (close friend) — confirm & brief on ring-exchange ceremony",false],
+    ["Hair & makeup artist — book trial + day-of",false],
+    ["Cake — baker confirmed",false],
+    ["Crossback chairs — confirm rental via Helart (qty for ~70)",false],
+    ["Gold cutlery — confirm with Helart",false],
+  ],
+  "Design & Decor":[
+    ["Lock palette: nude / cream / ivory / soft sand / warm brown / bronze",true],
+    ["Altar — Option A gold metal circle (Helart) confirmed",false],
+    ["Centerpieces — finalize cylinder count / fewer candles",false],
+    ["Cream draped tablecloths confirmed",false],
+    ["Napkins — supply ourselves (sourced?)",false],
+    ["Ceiling — decided: nothing for now",true],
+    ["Ceremony floor plan finalized (70 pax)",true],
+    ["Reception U-layout floor plan finalized",false],
+  ],
+  "Stationery & Signage":[
+    ["Welcome / entrance sign — design (Rafaela / Alma Design)",false],
+    ["Seating plan sign — design",false],
+    ["Toilet signage",false],
+    ["Cake signage",false],
+    ["Helart — signage structures/stands + floral styling (welcome/entrance only)",false],
+    ["Menus / place cards",false],
+  ],
+  "Guests & RSVP":[
+    ["Final guest list (~60–70)",false],
+    ["Invitations sent",false],
+    ["RSVP tracking",false],
+    ["Dietary requirements collected",false],
+    ["Dubai friends (5) — visa support letters",false],
+    ["Sisters' villa accommodation booked",false],
+    ["Guest transport / shuttle plan",false],
+  ],
+  "Logistics & Final Month":[
+    ["Final headcount to venue & Helart",false],
+    ["Final payments scheduled (week before)",false],
+    ["Vendor contact sheet compiled",false],
+    ["Hand everything to same-day coordinator (~24 Jun 2027)",false],
+    ["Day-of timeline shared with all vendors",false],
+    ["Emergency / rain plan confirmed",false],
+  ],
+};
+
+/* day-of schedule */
+const DAYOF = [
+  ["09:00","Hair & makeup begins (bride + party)"],
+  ["12:00","Helart setup begins — ceremony lawn + covered terrace"],
+  ["13:00","DJ Bruno arrives · sound setup (2–3 locations)"],
+  ["14:00","Cátia (coordinator) on site · vendors arrive · final setup check"],
+  ["15:00","Lia + 2nd photographer · getting-ready & detail shots"],
+  ["15:30","Guests arrive & are seated (ceremony gardens)"],
+  ["16:00","Ceremony begins — processional down the calçada aisle"],
+  ["16:25","Ring exchange · pronouncement · recessional"],
+  ["16:35","Cocktail hour on the lawn · DJ ambient set · group photos"],
+  ["17:30","Couple portraits"],
+  ["18:30","Guests move to covered terrace · seated for dinner (U-layout)"],
+  ["19:00","Dinner served"],
+  ["20:00","Toasts / speeches"],
+  ["20:45","Golden hour / sunset portraits (sunset ≈ 20:55)"],
+  ["21:00","Cake cutting"],
+  ["21:15","First dance · party begins (DJ Bruno)"],
+  ["00:00","Late-night supper service"],
+  ["02:00","Last song / send-off (Marriott covers 2h post-midnight)"],
+];
+
+/* planning timeline (high level) */
+const TIMELINE = [
+  ["Done","Venue secured — Marriott Praia D'El Rey, Óbidos"],
+  ["Done","Concept & palette locked (pampas → legal alternatives, nude/cream/bronze)"],
+  ["In progress · Jun 2026","Floral & design — Helart proposal finalizing; confirm & deposit"],
+  ["Jul–Sep 2026","Book photographer, DJ, hair & makeup, cake"],
+  ["Q4 2026","Stationery & signage design (Rafaela / Alma Design) · invitations"],
+  ["Q1 2027","Guest list final · RSVPs · visa letters (Dubai) · villa booking"],
+  ["Apr–May 2027","Tastings, final design walkthrough, mockups"],
+  ["~24 Jun 2027","FULL HANDOVER to same-day coordinator (1 month out)"],
+  ["Week of 21 Jul 2027","Final payments · final headcount · vendor contact sheet"],
+  ["24 Jul 2027","Wedding day ☼"],
+];
+</script>
+
+<script>
+/* ============================ RENDER ============================ */
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---- countdown ---- */
+function tickCountdown(){
+  const d = new Date(WEDDING_DATE) - new Date();
+  const days = Math.max(0, Math.ceil(d/86400000));
+  $("#cdDays").textContent = days;
+}
+
+/* ---- checklist persistence ---- */
+const LS_KEY = "wpc_v1";
+function loadState(){ try{return JSON.parse(localStorage.getItem(LS_KEY))||{}}catch(e){return {}} }
+function saveState(s){ localStorage.setItem(LS_KEY, JSON.stringify(s)); }
+let STATE = loadState();
+STATE.checked = STATE.checked || {};
+STATE.custom = STATE.custom || {};   // section -> [text,...]
+
+function allTasks(){
+  const out=[];
+  for(const sec in CHECKLIST) CHECKLIST[sec].forEach(([t])=>out.push(sec+"::"+t));
+  for(const sec in STATE.custom) (STATE.custom[sec]||[]).forEach(t=>out.push(sec+"::"+t));
+  return out;
+}
+function defaultsChecked(){
+  // seed done-by-default once
+  if(STATE._seeded) return;
+  for(const sec in CHECKLIST) CHECKLIST[sec].forEach(([t,done])=>{ if(done) STATE.checked[sec+"::"+t]=true; });
+  STATE._seeded = true; saveState(STATE);
+}
+function progressPct(){
+  const keys = allTasks();
+  if(!keys.length) return 0;
+  const done = keys.filter(k=>STATE.checked[k]).length;
+  return Math.round(done/keys.length*100);
+}
+
+/* ---- tab builders ---- */
+function pagehead(eyebrow,title,desc){
+  return `<div class="pagehead"><div class="eyebrow">${eyebrow}</div><h1>${title}</h1><p>${desc}</p></div>`;
+}
+
+function tab_dashboard(){
+  const pct = progressPct();
+  return pagehead("Overview","Welcome back","Everything for 24 July 2027 at Marriott Praia D'El Rey — design, vendors, guests, logistics and the day-of plan, all in one place.")
+  + `<div class="grid g4">
+      <div class="card tight"><div class="stat" id="dashDays">—</div><div class="stat-lbl">Days to go</div></div>
+      <div class="card tight"><div class="stat">~70</div><div class="stat-lbl">Guests</div></div>
+      <div class="card tight"><div class="stat">${pct}%</div><div class="stat-lbl">Checklist done</div></div>
+      <div class="card tight"><div class="stat">16:00</div><div class="stat-lbl">Ceremony</div></div>
+    </div>
+    <div class="grid g2 sec">
+      <div class="card"><h3>✦ Vendor status</h3>
+        <ul class="clean">
+          <li>Venue — Marriott Praia D'El Rey <span class="pill ok">Booked</span></li>
+          <li>Photographer — Lia Rodrigues <span class="pill ok">Booked</span></li>
+          <li>DJ — Bruno (FixTheMusic) <span class="pill ok">Booked</span></li>
+          <li>Coordinator — Cátia (Ode Stories) <span class="pill ok">Confirmed</span></li>
+          <li>Floral & Design — Helart <span class="pill warn">Finalizing</span></li>
+          <li>Hair & Makeup <span class="pill todo">To book</span></li>
+          <li>Cake <span class="pill todo">To book</span></li>
+        </ul>
+      </div>
+      <div class="card"><h3>€ Budget snapshot</h3>
+        <ul class="clean">
+          <li>Floral & Design (Helart, base) <b>€4,541.50</b></li>
+          <li>Photographer (Lia) <b>€1,875.00</b></li>
+          <li>DJ (Bruno) <b>€1,600.00</b></li>
+          <li>Coordinator (Cátia) <span class="muted">+ €57 travel</span></li>
+          <li>Venue · Hair/Makeup · Cake <span class="muted">TBD</span></li>
+        </ul>
+        <div class="note">Deposits paid: DJ €560 · Photographer €560. Next: Helart 50% (<b>€2,270.75</b>).</div>
+      </div>
+    </div>
+    <div class="card sec"><h3>↗ Quick links</h3>
+      <div class="linkbtns">
+        <a class="btn ghost" href="https://carynandlarswedding.com/" target="_blank">Public wedding site</a>
+        <a class="btn ghost" href="https://caryn-pids.github.io/wedding-ceremony-plan/" target="_blank">Ceremony floor plan</a>
+      </div>
+      <div class="note" style="margin-top:14px">Caryn leads planning, guests & family · Lars coordinates venue design with Helart & Marriott · A same-day coordinator takes over ~1 month before.</div>
+    </div>`;
+}
+
+function tab_timeline(){
+  return pagehead("Roadmap","Planning Timeline","From booking to the big day — and the all-important handover to your coordinator one month out.")
+  + `<div class="card"><div class="tl">`
+  + TIMELINE.map(([d,t])=>`<div class="ev"><div class="d">${esc(d)}</div><div class="t">${esc(t)}</div></div>`).join("")
+  + `</div></div>`;
+}
+
+function tab_dayof(){
+  return pagehead("24 July 2027","Day-of Schedule","Draft run-of-show. The same-day coordinator runs this and keeps every vendor on cue.")
+  + `<div class="card"><table><thead><tr><th style="width:90px">Time</th><th>Moment</th></tr></thead><tbody>`
+  + DAYOF.map(([t,e])=>`<tr><td><b>${esc(t)}</b></td><td>${esc(e)}</td></tr>`).join("")
+  + `</tbody></table></div>
+     <div class="note">Sunset in Óbidos on 24 Jul ≈ 20:55 — golden-hour portraits planned just before. Times are a working draft; tell Claude to adjust.</div>`;
+}
+
+function tab_checklist(){
+  let html = pagehead("Tracker","Checklist & Tasks","Tick things off as you go — progress is saved in this browser. Add your own tasks to any section.")
+   + `<div class="card"><h3>Overall progress</h3><div class="prog"><i id="progBar"></i></div><div class="stat-lbl" id="progLbl"></div></div>`;
+  const sections = new Set([...Object.keys(CHECKLIST), ...Object.keys(STATE.custom)]);
+  for(const sec of sections){
+    const base = (CHECKLIST[sec]||[]).map(([t])=>t);
+    const custom = STATE.custom[sec]||[];
+    html += `<div class="card sec"><h3>${esc(sec)}</h3><div data-sec="${esc(sec)}">`;
+    base.forEach(t=>html += checkRow(sec,t,false));
+    custom.forEach(t=>html += checkRow(sec,t,true));
+    html += `</div><div class="addrow"><input placeholder="Add a task…" data-add="${esc(sec)}"><button class="btn" onclick="addTask('${esc(sec).replace(/'/g,"\\'")}')">Add</button></div></div>`;
+  }
+  return html;
+}
+function checkRow(sec,t,isCustom){
+  const id = sec+"::"+t;
+  const done = STATE.checked[id] ? "done":"";
+  return `<div class="check ${done}">
+    <input type="checkbox" ${STATE.checked[id]?"checked":""} onchange="toggle(this,'${esc(id).replace(/'/g,"\\'")}')">
+    <label>${esc(t)}</label>
+    ${isCustom?`<button class="del" title="Remove" onclick="delTask('${esc(sec).replace(/'/g,"\\'")}','${esc(t).replace(/'/g,"\\'")}')">✕</button>`:""}
+  </div>`;
+}
+function toggle(el,id){ STATE.checked[id]=el.checked; saveState(STATE); el.closest(".check").classList.toggle("done",el.checked); refreshProgress(); }
+function addTask(sec){
+  const inp = document.querySelector(`[data-add="${CSS.escape(sec)}"]`);
+  const v = (inp.value||"").trim(); if(!v) return;
+  STATE.custom[sec]=STATE.custom[sec]||[]; STATE.custom[sec].push(v); saveState(STATE); render("checklist");
+}
+function delTask(sec,t){
+  STATE.custom[sec]=(STATE.custom[sec]||[]).filter(x=>x!==t);
+  delete STATE.checked[sec+"::"+t]; saveState(STATE); render("checklist");
+}
+function refreshProgress(){
+  const pct=progressPct(); const b=$("#progBar"), l=$("#progLbl");
+  if(b){b.style.width=pct+"%";} if(l){l.textContent=pct+"% complete";}
+  const dd=$("#dashDaysPct"); // noop
+}
+
+function tab_budget(){
+  return pagehead("Money","Budget","Live figures where known, TBD where we're still gathering quotes.")
+  + `<div class="card"><h3>Floral & Design — Helart (final selections)</h3>
+     <table><thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Unit</th><th class="num">Total</th></tr></thead><tbody>
+     <tr><td>Altar — Option A (gold circle)</td><td class="num">1</td><td class="num">€575.00</td><td class="num">€575.00</td></tr>
+     <tr><td>Aisle decoration</td><td class="num">8</td><td class="num">€65.00</td><td class="num">€520.00</td></tr>
+     <tr><td>Bali sun umbrellas</td><td class="num">2</td><td class="num">€85.00</td><td class="num">€170.00</td></tr>
+     <tr><td>Cream draped tablecloth</td><td class="num">1</td><td class="num">€160.00</td><td class="num">€160.00</td></tr>
+     <tr><td>Wooden crossback chairs</td><td class="num">60</td><td class="num">€7.90</td><td class="num">€474.00</td></tr>
+     <tr><td>Centerpiece — Option B (fewer candles)</td><td class="num">8</td><td class="num">~€175</td><td class="num">~€1,400.00</td></tr>
+     <tr><td>Gold cutlery (reallocated)</td><td class="num">—</td><td class="num">—</td><td class="num">~€200.00</td></tr>
+     <tr><td>Table-end + cake decor</td><td class="num">—</td><td class="num">reuse</td><td class="num">€0.00</td></tr>
+     <tr><td>Bridal bouquet</td><td class="num">1</td><td class="num">€160.00</td><td class="num">€160.00</td></tr>
+     <tr><td>Groom's boutonnière</td><td class="num">1</td><td class="num">€12.50</td><td class="num">€12.50</td></tr>
+     <tr><td>Transport / set-up / dismantling</td><td class="num">—</td><td class="num">—</td><td class="num">€870.00</td></tr>
+     <tr class="total"><td>Helart base total (VAT incl.)</td><td></td><td></td><td class="num">€4,541.50</td></tr>
+     </tbody></table>
+     <div class="note">Removed vs 2nd quote: beige napkins (self-supply) & ceiling drape. Signage styling to be added once Helart quotes it. 50% deposit: <b>€2,270.75</b>.</div>
+     </div>
+     <div class="card sec"><h3>Other vendors</h3>
+     <table><thead><tr><th>Category</th><th>Vendor</th><th>Status</th><th class="num">Cost</th><th class="num">Paid</th></tr></thead><tbody>
+     <tr><td>Photographer</td><td>Lia Rodrigues</td><td><span class="pill ok">Booked</span></td><td class="num">€1,875.00</td><td class="num">€560.00</td></tr>
+     <tr><td>DJ / Music</td><td>Bruno (FixTheMusic)</td><td><span class="pill ok">Booked</span></td><td class="num">€1,600.00</td><td class="num">€560.00</td></tr>
+     <tr><td>Coordinator</td><td>Cátia · Ode Stories</td><td><span class="pill ok">Confirmed</span></td><td class="num muted">+ €57 travel</td><td class="num muted">—</td></tr>
+     <tr><td>Venue</td><td>Marriott Praia D'El Rey</td><td><span class="pill ok">Booked</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
+     <tr><td>Hair & Makeup</td><td>—</td><td><span class="pill todo">To book</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
+     <tr><td>Cake</td><td>—</td><td><span class="pill todo">To book</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
+     <tr><td>Stationery</td><td>Rafaela · Alma Design (rec.)</td><td><span class="pill todo">To contact</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
+     </tbody></table>
+     <div class="note">Known booked vendors total <b>€8,016.50 + €57</b> (Helart €4,541.50 · Lia €1,875 · Bruno €1,600 · Cátia travel €57). Deposits paid to date: <b>€1,120</b>.</div></div>`;
+}
+
+function tab_venue(){
+  return pagehead("Location","Venue — Marriott Praia D'El Rey","Clifftop oceanfront resort in Óbidos. Ceremony in the gardens, reception on the covered terrace.")
+  + `<div class="grid g2">
+      <div class="card"><h3>Key details</h3>
+        <dl class="kv">
+          <dt>Resort</dt><dd>Marriott Beach &amp; Golf Resort, Praia D'El Rey</dd>
+          <dt>Town</dt><dd>Óbidos, Portugal</dd>
+          <dt>Date</dt><dd>Sat 24 July 2027</dd>
+          <dt>Ceremony</dt><dd>16:00 · clifftop gardens</dd>
+          <dt>Cocktail</dt><dd>Same lawn, after ceremony</dd>
+          <dt>Reception</dt><dd>Covered terrace · U-layout</dd>
+          <dt>Guests</dt><dd>~60–70</dd>
+          <dt>Tables/chairs</dt><dd>Rect. tables by Marriott · crossback chairs via Helart</dd>
+        </dl>
+      </div>
+      <div class="card"><h3>To confirm with venue</h3>
+        <ul class="dot">
+          <li>Final headcount & floor plan sign-off</li>
+          <li>Rain / wind backup plan (clifftop, oceanfront)</li>
+          <li>Vendor load-in / setup access times</li>
+          <li>Power for DJ + any pendant lighting</li>
+          <li>Cake table & dietary requirements</li>
+          <li>Guest transport / parking</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+function tab_floral(){
+  return pagehead("Helart","Floral &amp; Design + Styling","Hélia Arte (Helart) — dried + artificial pampas, candlelight, sculptural & organic in nude/cream/bronze.")
+  + `<div class="grid g2">
+      <div class="card"><h3>Contact</h3>
+        <dl class="kv">
+          <dt>Studio</dt><dd>Helart (Hélia Arte Floral)</dd>
+          <dt>Contact</dt><dd>Liliana</dd>
+          <dt>Email</dt><dd>events@helart.pt</dd>
+          <dt>Events</dt><dd>+351 912 996 955</dd>
+          <dt>Shop</dt><dd>+351 262 843 149</dd>
+          <dt>Location</dt><dd>Caldas da Rainha</dd>
+        </dl>
+        <div class="note">Status: finalizing 2nd quote with our adjustments. Next: confirm final figure → pay 50% to reserve.</div>
+      </div>
+      <div class="card"><h3>Palette &amp; materials</h3>
+        <p><b>Colours:</b> nude, white, soft sand, cream, warm brown / bronze. No pinks.</p>
+        <p><b>Flowers:</b> dried flowers, artificial pampas, roses, dahlia, hydrangeas + seasonal in tone.</p>
+        <p><b>Style:</b> sculptural, organic, candlelight-forward.</p>
+      </div>
+    </div>
+    <div class="grid g2 sec">
+      <div class="card"><h3>Design elements</h3>
+        <ul class="clean">
+          <li>Altar — gold metal circle (Option A) <span class="pill ok">Selected</span></li>
+          <li>Aisle — deconstructed arrangements, every other chair</li>
+          <li>2× Bali sun umbrellas (drinks table + band)</li>
+          <li>Cream draped tablecloths · U-layout</li>
+          <li>Centerpieces — glass cylinders, ivory pillar candles (fewer)</li>
+          <li>Gold cutlery (reallocated from candle budget)</li>
+          <li>Table-end + cake — reuse ceremony florals</li>
+          <li>Bridal bouquet · groom's boutonnière</li>
+          <li>Napkins — <b>we supply</b> · Ceiling — <b>none for now</b></li>
+        </ul>
+      </div>
+      <div class="card"><h3>Signage styling (with Helart)</h3>
+        <ul class="dot">
+          <li>Structures / stands — quote requested</li>
+          <li>Floral + candle styling on <b>welcome / entrance</b> sign only</li>
+          <li>No floral décor on toilet & cake signage</li>
+          <li>Printed signs → <b>Rafaela, Alma Design</b> (Helart recommendation)</li>
+          <li>Want to see Helart's signage samples / photos</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card sec"><h3>Helart day-of timeline</h3>
+      <ul class="dot">
+        <li>Setup from ~12:00 — ceremony lawn (altar, aisle, umbrellas)</li>
+        <li>Reception styling on covered terrace before guests move over</li>
+        <li>Reuse ceremony arrangements for table-ends + cake area</li>
+        <li>Dismantle after event (business-day collection)</li>
+      </ul>
+      <div class="note">Adjustments allowed up to 1 month before · final payment week before the wedding.</div>
+    </div>`;
+}
+
+function tab_dj(){
+  return pagehead("Music","DJ &amp; Music","DJ Bruno — booked & deposit paid. Full Day Pack covering ceremony → cocktail → dinner → party.")
+  + `<div class="grid g2">
+      <div class="card"><h3>Status &amp; contact <span class="pill ok">Booked</span></h3>
+        <dl class="kv"><dt>DJ</dt><dd>Bruno (Algarve, travels)</dd>
+        <dt>Booked via</dt><dd>FixTheMusic · ref h6397w</dd>
+        <dt>Email</dt><dd>djbruno@fixthemusic.com</dd>
+        <dt>Profile</dt><dd><a href="https://www.fixthemusic.com/dj-portugal-bruno" target="_blank">fixthemusic.com</a></dd>
+        <dt>Booked on</dt><dd>29 May 2026</dd></dl>
+      </div>
+      <div class="card"><h3>Payments</h3>
+        <table><tbody>
+        <tr><td>Deposit (35%)</td><td class="num">€560.00</td><td><span class="pill ok">Paid</span></td></tr>
+        <tr><td>Balance (65%) · by 9 Jun 2027</td><td class="num">€1,040.00</td><td><span class="pill warn">Pending</span></td></tr>
+        <tr class="total"><td>Total</td><td class="num">€1,600.00</td><td></td></tr>
+        </tbody></table>
+        <div class="note">All payments via the FixTheMusic platform. Set a reminder ~early May 2027 for the balance.</div>
+      </div>
+    </div>
+    <div class="grid g2 sec">
+      <div class="card"><h3>Inclusions (Full Day Pack)</h3>
+        <ul class="dot"><li>Up to <b>10h service</b> from 16:00 (setup/load-out not counted)</li>
+        <li>Ceremony music + microphones</li><li>Cocktail ambience</li>
+        <li>Wireless mics for speeches</li><li>Dinner background music</li>
+        <li>Special moments (entrance, cake, first dance)</li>
+        <li>Evening party set</li><li>Sound for 2–3 locations · lights + fog · DJ booth</li>
+        <li>Travel included</li></ul>
+      </div>
+      <div class="card"><h3>Day-of &amp; brief</h3>
+        <ul class="dot">
+          <li><b>~13:00</b> arrives (3h before guests) — setup</li>
+          <li><b>15:30</b> prelude · <b>16:00</b> processional cues</li>
+          <li><b>16:35</b> cocktail · <b>19:00</b> dinner · <b>21:00</b> cake · <b>21:15</b> first dance → party</li>
+          <li><b>02:00</b> last song</li>
+        </ul>
+        <div class="note">To do: share <b>Music Brief</b> + cultural tracks; schedule run-of-show call May/Jun 2027.</div>
+      </div>
+    </div>
+    <div class="card sec"><h3>♪ Songs to lock (6 weeks before)</h3>
+      <table><thead><tr><th>Moment</th><th>Pick / options</th><th>Status</th></tr></thead><tbody>
+      <tr><td>Pre-ceremony arrival</td><td>Canon in D × I Giorni · Let It Be (piano)</td><td><span class="pill warn">Shortlist</span></td></tr>
+      <tr><td>Processional</td><td>VSQ / Einaudi / Piano Guys options</td><td><span class="pill todo">To pick</span></td></tr>
+      <tr><td>Bride's entrance</td><td>Start of Something Good · All My Life · If You Love Her · Falling Like the Stars</td><td><span class="pill warn">Choose 1</span></td></tr>
+      <tr><td>Recessional</td><td>September (recommended)</td><td><span class="pill todo">To pick</span></td></tr>
+      <tr><td>Dinner entrance (18:30)</td><td>Beautiful People — Guetta ft. Sia</td><td><span class="pill ok">Locked</span></td></tr>
+      <tr><td>Cake cutting</td><td>Marry You · Sugar · Sunday Best …</td><td><span class="pill todo">To pick</span></td></tr>
+      <tr><td>First dance</td><td>From the Start · Like Real People Do · Perfect …</td><td><span class="pill todo">To pick</span></td></tr>
+      <tr><td>Last song</td><td>Don't Stop Believin' · Wonderwall · Time of My Life</td><td><span class="pill todo">To pick</span></td></tr>
+      </tbody></table>
+      <div class="note">Lock 6 weeks out · send Bruno WAV files on USB. Full working list lives in <span class="tag">Vendors/DJ/DJ Song Working List.md</span>.</div>
+    </div>
+    <div class="grid g2 sec">
+      <div class="card"><h3>Must-play anchors</h3>
+        <ul class="dot">
+          <li><b>Cocktail:</b> Tienes (Nu Genea) · Mar de copas · Hypnotized</li>
+          <li><b>Floor warmup:</b> Dancing Queen · September</li>
+          <li><b>Party 1:</b> Levitating · Crazy in Love · Uptown Funk</li>
+          <li><b>Party 2 (house):</b> Music Sounds Better With You · Lady · One More Time</li>
+          <li><b>Closing:</b> Don't Stop Believin' · Time of My Life</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Cultural anchors</h3>
+        <p><b>🇩🇰 Danish:</b> Kvinde min · Midt om natten (Kim Larsen) · Velkommen til Medina · Stor Mand (Tobias Rahim)</p>
+        <p><b>🇵🇭 Filipino:</b> Ang Huling El Bimbo (Eraserheads) · Tala (Sarah Geronimo) · Otso-Otso · Spaghetti Pababa</p>
+        <p class="tag">Phonetic notes + Spotify links in the brief — send to Bruno so he can prep.</p>
+      </div>
+    </div>
+    <div class="card sec"><h3>⛔ Do-not-play (binding)</h3>
+      <p>Cheesy wedding standards (YMCA, Macarena, Cha Cha Slide, Chicken Dance) · hard EDM / festival drops · country · religious music · explicit hip-hop · 10-min club mixes · sad / break-up songs · anthems / politicized tracks · 90s novelty.</p>
+      <div class="note">Also send Bruno a private "ex-baggage" don't-list if any.</div>
+    </div>`;
+}
+
+function tab_photo(){
+  return pagehead("Photography","Photographer — Lia Rodrigues","Booked & deposit paid. Enchantment Collection — emotional, natural, editorial. Two photographers + engagement session.")
+  + `<div class="grid g2">
+      <div class="card"><h3>Status &amp; contact <span class="pill ok">Booked</span></h3>
+        <dl class="kv"><dt>Studio</dt><dd>Lia Rodrigues Emotions Photography</dd>
+        <dt>Email</dt><dd>lia.rodrigues@gmail.com</dd>
+        <dt>Phone</dt><dd>+351 962 570 438</dd>
+        <dt>Base</dt><dd>Sintra · ~1h to venue</dd>
+        <dt>Package</dt><dd>Enchantment · up to 12h</dd>
+        <dt>Includes</dt><dd>2 photographers · engagement session · private gallery</dd></dl>
+      </div>
+      <div class="card"><h3>Payments (30 / 50 / 20)</h3>
+        <table><tbody>
+        <tr><td>Deposit (30%)</td><td class="num">€560.00</td><td><span class="pill ok">Paid</span></td></tr>
+        <tr><td>Pre-wedding (50%) · ~17 Jul 2027</td><td class="num">€937.50</td><td><span class="pill warn">Pending</span></td></tr>
+        <tr><td>On gallery delivery (20%)</td><td class="num">€377.50</td><td><span class="pill warn">Pending</span></td></tr>
+        <tr class="total"><td>Total (incl. €75 travel)</td><td class="num">€1,875.00</td><td></td></tr>
+        </tbody></table>
+        <div class="note">To do: sign contract · fill questionnaire · book engagement session · schedule intro call.</div>
+      </div>
+    </div>
+    <div class="card sec"><h3>Coverage timeline</h3>
+        <ul class="dot"><li><b>15:00</b> Getting ready + details (rings, florals, attire)</li>
+        <li><b>16:00</b> Ceremony</li><li><b>16:35</b> Cocktail candids + family groups</li>
+        <li><b>17:30</b> Couple portraits</li><li><b>20:45</b> Golden-hour / sunset</li>
+        <li><b>21:00+</b> Cake, first dance, party</li></ul>
+      </div>
+    <div class="card sec"><h3>Shot list — focus</h3>
+      <div class="grid g2">
+        <ul class="dot"><li>Detail flat-lays (invites, rings, bouquet, cutlery)</li><li>Altar gold-circle &amp; aisle</li>
+        <li>Ocean / clifftop wides</li><li>Processional + ring exchange</li></ul>
+        <ul class="dot"><li>Family &amp; guest groupings (build list)</li><li>Sisters + Dubai friends together</li>
+        <li>Reception room before guests enter</li><li>Candid dancing &amp; speeches</li></ul>
+      </div>
+      <div class="note">Tip: give the photographer the family-group list in advance so cocktail hour stays efficient.</div>
+    </div>`;
+}
+
+function tab_seating(){
+  return pagehead("Layouts","Seating Plans","Ceremony (clifftop lawn) and reception (covered terrace, U-layout).")
+  + `<div class="card"><h3>Ceremony — 70 pax (clifftop lawn)</h3>
+       <iframe src="https://caryn-pids.github.io/wedding-ceremony-plan/" title="Ceremony floor plan"></iframe>
+       <div class="linkbtns"><a class="btn ghost" href="https://caryn-pids.github.io/wedding-ceremony-plan/" target="_blank">Open full plan ↗</a></div>
+     </div>
+     <div class="card sec"><h3>Reception — covered terrace (U-layout, 70 seats)</h3>
+       <iframe src="https://caryn-pids.github.io/wedding-ceremony-plan/reception.html" title="Reception floor plan"></iframe>
+       <div class="linkbtns"><a class="btn ghost" href="https://caryn-pids.github.io/wedding-ceremony-plan/reception.html" target="_blank">Open full plan ↗</a></div>
+       <ul class="dot">
+         <li>Single U-shaped table seating ~70 (rect. tables from Marriott)</li>
+         <li>Couple seated <b>with guests</b> at the U — no sweetheart table</li>
+         <li>Cream draped linens · crossback chairs · gold cutlery · candle cylinders</li>
+         <li>Cake table (round, Marriott-provided) with reused ceremony florals · DJ + bar by the entrance</li>
+       </ul>
+     </div>`;
+}
+
+function tab_guests(){
+  return pagehead("Our People","Guests","~60–70 guests. Track groups, RSVPs, travel and special needs.")
+  + `<div class="grid g2">
+      <div class="card"><h3>Headcount</h3>
+        <dl class="kv"><dt>Estimated</dt><dd>~60–70</dd><dt>Ceremony seats</dt><dd>70 (current plan)</dd>
+        <dt>Reception</dt><dd>U-layout ~70</dd><dt>RSVPs</dt><dd class="muted">TBD</dd></dl>
+      </div>
+      <div class="card"><h3>Key groups</h3>
+        <ul class="clean">
+          <li>Caryn's sisters <span class="pill warn">Villa accom.</span></li>
+          <li>Dubai Filipino friends (5) <span class="pill pend">Visa support</span></li>
+          <li>Family — PT &amp; abroad <span class="pill todo">List</span></li>
+          <li>Friends <span class="pill todo">List</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card sec"><h3>Guest workstreams</h3>
+      <ul class="dot">
+        <li>Build master guest list + contact details</li>
+        <li>Send invitations &amp; track RSVPs</li>
+        <li>Collect dietary requirements</li>
+        <li>Visa support letters for the 5 Dubai friends</li>
+        <li>Villa booking for sisters</li>
+        <li>Transport / shuttle &amp; accommodation guidance</li>
+      </ul>
+      <div class="note">Want a sortable guest-list table (RSVP, meal, group, +1)? Say the word and I'll add it here.</div>
+    </div>`;
+}
+
+function tab_coordinator(){
+  return pagehead("Hand-off","Same-Day Coordinator","Takes over ~1 month before (≈ 24 Jun 2027). Owns the run-of-show and every vendor on the day.")
+  + `<div class="grid g2">
+      <div class="card"><h3>Status <span class="pill ok">Confirmed</span></h3>
+        <dl class="kv"><dt>Coordinator</dt><dd>Cátia — Ode Stories</dd>
+        <dt>Email</dt><dd>hello@odestories.pt</dd>
+        <dt>Travel</dt><dd>Almada → Óbidos · €57</dd>
+        <dt>Payment</dt><dd>50% booking · 50% week before</dd>
+        <dt>Handover</dt><dd>~24 Jun 2027 (1 month out)</dd>
+        <dt>End time</dt><dd>Party to 02:00 (Marriott covers 2h post-midnight)</dd></dl>
+        <div class="note">Until handover: Caryn plans + guests/family; Lars owns venue design with Helart &amp; Marriott. To do: sign service agreement, intro call (July), send Caryn's legal name/address/phone.</div>
+      </div>
+      <div class="card"><h3>Handover pack to prepare</h3>
+        <ul class="dot"><li>Final day-of timeline</li><li>Vendor contact sheet (all numbers)</li>
+        <li>Floor plans — ceremony + reception</li><li>Seating chart &amp; family-group photo list</li>
+        <li>Payments outstanding &amp; who pays whom</li><li>Décor / setup notes (Helart)</li>
+        <li>Rain / wind backup plan</li></ul>
+      </div>
+    </div>
+    <div class="card sec"><h3>Coordinator follow-ups (on the day)</h3>
+      <div class="grid g2">
+        <ul class="dot"><li>Confirm all vendor arrival times</li><li>Oversee Helart setup vs floor plan</li>
+        <li>Cue processional / music with DJ</li><li>Manage cocktail → reception flow</li></ul>
+        <ul class="dot"><li>Keep speeches &amp; cake on schedule</li><li>Handle guest questions / issues</li>
+        <li>Coordinate sunset portraits window</li><li>Manage end-of-night &amp; dismantle</li></ul>
+      </div>
+    </div>`;
+}
+
+const BUILDERS = {dashboard:tab_dashboard,timeline:tab_timeline,dayof:tab_dayof,checklist:tab_checklist,
+  budget:tab_budget,venue:tab_venue,floral:tab_floral,dj:tab_dj,photo:tab_photo,seating:tab_seating,
+  guests:tab_guests,coordinator:tab_coordinator};
+
+function render(tab){
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+  $("#main").innerHTML = BUILDERS[tab]();
+  if(tab==="dashboard"){ $("#dashDays").textContent = $("#cdDays").textContent; }
+  if(tab==="checklist"){ refreshProgress(); }
+  location.hash = tab;
+  if(window.innerWidth<=860) document.querySelector(".side").classList.remove("open");
+  window.scrollTo(0,0);
+}
+
+/* build nav */
+$("#nav").innerHTML = TABS.map(([id,label,ico])=>
+  `<button data-tab="${id}" onclick="render('${id}')"><span class="ico">${ico}</span>${label}</button>`).join("");
+
+defaultsChecked();
+tickCountdown(); setInterval(tickCountdown, 3600000);
+render((location.hash||"#dashboard").slice(1));
+</script>
+</body>
+</html>
