@@ -392,8 +392,13 @@ function refreshProgress(){
 }
 
 function tab_budget(){
-  return pagehead("Money","Budget","Live figures where known, TBD where we're still gathering quotes.")
-  + `<div class="card"><h3>Floral & Design — Helart (final selections)</h3>
+  return pagehead("Money","Budget","Tracked against our agreed plan — the RECOMMENDED option (€30,240) from the Marriott scenario simulator.")
+  + `<div class="grid g3">
+      <div class="card tight"><div class="stat">€30,240</div><div class="stat-lbl">Planned (Recommended)</div></div>
+      <div class="card tight"><div class="stat">€11,074</div><div class="stat-lbl">Committed · 5 booked lines</div></div>
+      <div class="card tight"><div class="stat">€1,120</div><div class="stat-lbl">Deposits paid to date</div></div>
+    </div>
+    <div class="card sec"><h3>Floral & Design — Helart (final selections)</h3>
      <table><thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Unit</th><th class="num">Total</th></tr></thead><tbody>
      <tr><td>Altar — Option A (gold circle)</td><td class="num">1</td><td class="num">€575.00</td><td class="num">€575.00</td></tr>
      <tr><td>Aisle decoration</td><td class="num">8</td><td class="num">€65.00</td><td class="num">€520.00</td></tr>
@@ -421,7 +426,59 @@ function tab_budget(){
      <tr><td>Cake</td><td>—</td><td><span class="pill todo">To book</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
      <tr><td>Stationery</td><td>Rafaela · Alma Design (rec.)</td><td><span class="pill todo">To contact</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
      </tbody></table>
-     <div class="note">Known booked vendors total <b>€8,016.50 + €57</b> (Helart €4,541.50 · Lia €1,875 · Bruno €1,600 · Cátia travel €57). Deposits paid to date: <b>€1,120</b>.</div></div>`;
+     <div class="note">Known booked vendors total <b>€8,016.50 + €57</b> (Helart €4,541.50 · Lia €1,875 · Bruno €1,600 · Cátia travel €57). Deposits paid to date: <b>€1,120</b>.</div></div>
+     <div class="card sec"><h3>📊 Plan vs Actual — booked categories</h3>
+       <table><thead><tr><th>Category</th><th class="num">Planned (Rec.)</th><th class="num">Actual / committed</th><th class="num">Variance</th></tr></thead><tbody>
+       <tr><td>Flowers &amp; Decoration → Helart</td><td class="num">€1,500</td><td class="num">€4,541.50</td><td class="num" style="color:#b06a6a">+€3,041.50</td></tr>
+       <tr><td>Photographer → Lia</td><td class="num">€2,000</td><td class="num">€1,875.00</td><td class="num" style="color:#5d7740">−€125.00</td></tr>
+       <tr><td>DJ → Bruno</td><td class="num">€1,200</td><td class="num">€1,600.00</td><td class="num" style="color:#b06a6a">+€400.00</td></tr>
+       <tr><td>Day-of Coordinator → Cátia</td><td class="num">€1,500</td><td class="num">€1,557.00</td><td class="num" style="color:#b06a6a">+€57.00</td></tr>
+       <tr><td>Wedding Dress → Academia</td><td class="num">€500</td><td class="num">~€1,500.00</td><td class="num" style="color:#b06a6a">+€1,000.00</td></tr>
+       <tr class="total"><td>Tracked subtotal</td><td class="num">€6,700</td><td class="num">€11,073.50</td><td class="num" style="color:#b06a6a">+€4,373.50</td></tr>
+       </tbody></table>
+       <div class="note">We're <b>~€4,374 over</b> on these five lines vs the Recommended plan — almost entirely the <b>florals</b> (Helart €4,542 vs €1,500 planned) and the <b>custom gown</b> (€1,500 vs €500). Photographer came in under; DJ &amp; coordinator slightly over. Venue &amp; remaining categories still to track.</div>
+     </div>
+     <div class="card sec"><h3>🗂 Original plan — RECOMMENDED option</h3>
+       <p class="tag">Agreed reference budget · Marriott Scenario Simulator · 65 adults + 8 kids · Feb 2026.</p>
+       <table><thead><tr><th>Marriott venue (incl. F&amp;B, DJ, coordinator, cake)</th><th class="num">€</th></tr></thead><tbody>
+       <tr><td>Ceremony — Garden Sea View</td><td class="num">2,250</td></tr>
+       <tr><td>Reception — Covered Terrace</td><td class="num">1,350</td></tr>
+       <tr><td>Cocktail drinks (1h · Opt 2)</td><td class="num">1,300</td></tr>
+       <tr><td>Cocktail canapés (6 items)</td><td class="num">1,300</td></tr>
+       <tr><td>Dinner — Emerald 3-course</td><td class="num">5,850</td></tr>
+       <tr><td>Wine — sommelier selection</td><td class="num">1,625</td></tr>
+       <tr><td>Open bar — 2h base</td><td class="num">2,145</td></tr>
+       <tr><td>Open bar — +1h (3h total)</td><td class="num">780</td></tr>
+       <tr><td>Late-night supper</td><td class="num">2,080</td></tr>
+       <tr><td>Children dinner (×8 @ 50%)</td><td class="num">360</td></tr>
+       <tr><td>DJ (external)</td><td class="num">1,200</td></tr>
+       <tr><td>Day-of coordinator</td><td class="num">1,500</td></tr>
+       <tr><td>Night service surcharge</td><td class="num">600</td></tr>
+       <tr><td>Wedding cake (external)</td><td class="num">500</td></tr>
+       <tr class="total"><td>Venue total</td><td class="num">€22,840</td></tr>
+       </tbody></table>
+       <table style="margin-top:14px"><thead><tr><th>Shared costs</th><th class="num">€</th></tr></thead><tbody>
+       <tr><td>Photographer</td><td class="num">2,000</td></tr>
+       <tr><td>Wedding dress</td><td class="num">500</td></tr>
+       <tr><td>Groom's suit</td><td class="num">400</td></tr>
+       <tr><td>Rings (pair)</td><td class="num">600</td></tr>
+       <tr><td>Hair &amp; makeup</td><td class="num">250</td></tr>
+       <tr><td>Flowers &amp; decoration</td><td class="num">1,500</td></tr>
+       <tr><td>Nannies ×2</td><td class="num">800</td></tr>
+       <tr><td>Kids sleep room</td><td class="num">150</td></tr>
+       <tr><td>Kids entertainment</td><td class="num">200</td></tr>
+       <tr><td>Save-the-dates &amp; website</td><td class="num">100</td></tr>
+       <tr><td>Ceremony lead gift</td><td class="num">100</td></tr>
+       <tr><td>Bride accessories</td><td class="num">200</td></tr>
+       <tr><td>Groom accessories</td><td class="num">100</td></tr>
+       <tr><td>Buffer / contingency</td><td class="num">500</td></tr>
+       <tr class="total"><td>Shared total</td><td class="num">€7,400</td></tr>
+       </tbody></table>
+       <table style="margin-top:14px"><tbody>
+       <tr class="total"><td>GRAND TOTAL — Recommended</td><td class="num">€30,240</td></tr>
+       </tbody></table>
+       <div class="note">Scenarios: Lean €25,674 · <b>Recommended €30,240 (agreed)</b> · Comfortable €37,554. All-in ≈ €465 / adult guest.</div>
+     </div>`;
 }
 
 function tab_venue(){
