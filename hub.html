@@ -166,7 +166,7 @@ const CHECKLIST = {
     ["DJ — Bruno (FixTheMusic) — BOOKED, deposit paid",true],
     ["Same-day coordinator — Cátia (Ode Stories) — confirmed",true],
     ["Floral & design — Helart: confirm final quote & pay 50% deposit",false],
-    ["Bridal gown — finalize with Sónia (Academia das Noivas) @ €1,500 + book 1st fitting",false],
+    ["Bridal gown — €1,500 agreed with Sónia (Academia) ✓; book Visit 1 + pay deposit",false],
     ["DJ balance €1,040 — due by 9 Jun 2027",false],
     ["Photographer 50% (€937.50) — due ~17 Jul 2027",false],
     ["Photographer — sign contract + fill questionnaire + book engagement session",false],
@@ -311,7 +311,7 @@ function tab_dashboard(){
           <li>DJ — Bruno (FixTheMusic) <span class="pill ok">Booked</span></li>
           <li>Coordinator — Cátia (Ode Stories) <span class="pill ok">Confirmed</span></li>
           <li>Floral & Design — Helart <span class="pill warn">Finalizing</span></li>
-          <li>Bridal gown — Academia das Noivas <span class="pill warn">Finalizing</span></li>
+          <li>Bridal gown — Academia das Noivas <span class="pill ok">Confirmed</span></li>
           <li>Hair & Makeup <span class="pill todo">To book</span></li>
           <li>Cake <span class="pill todo">To book</span></li>
         </ul>
@@ -321,7 +321,7 @@ function tab_dashboard(){
           <li>Floral & Design (Helart, base) <b>€4,541.50</b></li>
           <li>Photographer (Lia) <b>€1,875.00</b></li>
           <li>DJ (Bruno) <b>€1,600.00</b></li>
-          <li>Bridal gown (Academia) <b>~€1,500</b> <span class="muted">pending</span></li>
+          <li>Bridal gown (Academia) <b>€1,500</b> <span class="muted">agreed</span></li>
           <li>Coordinator (Cátia) <span class="muted">+ €57 travel</span></li>
           <li>Venue · Hair/Makeup · Cake <span class="muted">TBD</span></li>
         </ul>
@@ -420,7 +420,7 @@ function tab_budget(){
      <tr><td>Photographer</td><td>Lia Rodrigues</td><td><span class="pill ok">Booked</span></td><td class="num">€1,875.00</td><td class="num">€560.00</td></tr>
      <tr><td>DJ / Music</td><td>Bruno (FixTheMusic)</td><td><span class="pill ok">Booked</span></td><td class="num">€1,600.00</td><td class="num">€560.00</td></tr>
      <tr><td>Coordinator</td><td>Cátia · Ode Stories</td><td><span class="pill ok">Confirmed</span></td><td class="num muted">+ €57 travel</td><td class="num muted">—</td></tr>
-     <tr><td>Bridal gown</td><td>Academia das Noivas (Sónia)</td><td><span class="pill warn">Finalizing</span></td><td class="num">~€1,500.00</td><td class="num muted">—</td></tr>
+     <tr><td>Bridal gown</td><td>Academia das Noivas (Sónia)</td><td><span class="pill ok">Confirmed</span></td><td class="num">€1,500.00</td><td class="num muted">—</td></tr>
      <tr><td>Venue</td><td>Marriott Praia D'El Rey</td><td><span class="pill ok">Booked</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
      <tr><td>Hair & Makeup</td><td>—</td><td><span class="pill todo">To book</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
      <tr><td>Cake</td><td>—</td><td><span class="pill todo">To book</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
@@ -752,17 +752,18 @@ function tab_coordinator(){
 }
 
 function tab_bridal(){
-  return pagehead("The Dress","Bridal Gown — Academia das Noivas","Custom haute-couture mermaid gown by Sónia Rodrigues. Finalizing the agreement now.")
+  return pagehead("The Dress","Bridal Gown — Academia das Noivas","Custom haute-couture mermaid gown by Sónia Rodrigues. €1,500 agreed — officially booked, scheduling the first visit.")
   + `<div class="grid g2">
-      <div class="card"><h3>Atelier &amp; status <span class="pill warn">Finalizing</span></h3>
+      <div class="card"><h3>Atelier &amp; status <span class="pill ok">Confirmed €1,500</span></h3>
         <dl class="kv">
           <dt>Atelier</dt><dd>Academia das Noivas (Haute Couture)</dd>
           <dt>Designer</dt><dd>Sónia Rodrigues</dd>
           <dt>Email</dt><dd>academiadasnoivas@hotmail.com</dd>
           <dt>Location</dt><dd>Setúbal area (~2h from Caldas)</dd>
           <dt>Model</dt><dd>“Light of Lace” · Pearl Edition · Coll. 2026</dd>
+          <dt>Price</dt><dd>€1,500 (approved 18 Jun 2026)</dd>
         </dl>
-        <div class="note">Price: requested <b>€1,500</b> — Sónia taking it to finance (as of 18 Jun 2026). Lace now physically in store to view. Awaiting her go-ahead → then book first measurements visit.</div>
+        <div class="note">Caryn accepted — “officially in.” Doing everything in person on Visit 1 (no online). Lace now in store to view. Awaiting Sónia's reply on date / deposit / payment split / what to bring.</div>
       </div>
       <div class="card"><h3>The design</h3>
         <p>Romantic, feminine <b>mermaid (fit-and-flare)</b> gown — pearl floral embroidered lace with subtle sequins; lace concentrated on bodice, hips &amp; upper skirt, softly extending onto a light tulle skirt. Floral lace appliqué straps · elegant low back.</p>
@@ -781,24 +782,31 @@ function tab_bridal(){
           <li><b>Add for the day:</b> bustle / detachable train (long day, paving + grass + terrace)</li>
         </ul>
       </div>
-      <div class="card"><h3>Fittings &amp; logistics</h3>
+      <div class="card"><h3>Fittings plan — 3 in-person visits</h3>
         <ul class="dot">
-          <li>Sónia proposes ~<b>3 fittings</b> (sometimes enough); 1st can be at the first meeting</li>
-          <li>Measurements + contract can be done <b>online</b> (she does this for overseas brides)</li>
-          <li>Effectively <b>2 key fittings</b>; 3rd can coincide with dress delivery</li>
-          <li>~<b>2h drive each way</b> → group visits / same-day steps to minimize trips</li>
+          <li><b>Visit 1:</b> meeting + contract + measurements + first fitting (all same day)</li>
+          <li><b>Visit 2:</b> second fitting</li>
+          <li><b>Visit 3:</b> final fitting + dress delivery (combined)</li>
+          <li>Target Visit 1: <b>2nd week of July 2026</b>, arrive <b>11:30am–12:00pm</b> (~2h drive)</li>
         </ul>
         <div class="note">Climate note: 24 Jul, 16:00, 25–35°C coastal — light, breathable build (this gown's tulle + illusion fits well).</div>
       </div>
     </div>
-    <div class="card sec"><h3>Next steps</h3>
-      <ul class="dot">
-        <li>Await Sónia's confirmation on €1,500</li>
-        <li>If aligned → schedule first measurements visit (view lace in person)</li>
-        <li>Confirm customization choices (neckline / back / straps / lace / volume)</li>
-        <li>Sign contract · agree fitting dates anchored to 24 Jul 2027 · plan a bustle/detachable train</li>
-        <li>Budget note: master plan targeted ~€500–900; chosen custom atelier at €1,500.</li>
-      </ul>
+    <div class="card sec"><h3>Awaiting from Sónia · then to do</h3>
+      <div class="grid g2">
+        <ul class="dot">
+          <li>First-visit <b>date</b> (2nd week July)</li>
+          <li><b>Deposit</b> amount + method (transfer / MB Way)</li>
+          <li><b>Payment schedule</b> (balance split)</li>
+          <li><b>What to bring</b>: undergarments · shoes (heel height) · references</li>
+        </ul>
+        <ul class="dot">
+          <li>Decide customizations: neckline · back (low V/illusion) · straps · lace density · tulle volume</li>
+          <li>Plan a <b>bustle / detachable train</b> for the long day</li>
+          <li>Sign contract on Visit 1 · pay deposit</li>
+          <li>Full email log: <span class="tag">Bridal Gown/Email Log - Academia das Noivas (Sónia).md</span></li>
+        </ul>
+      </div>
     </div>`;
 }
 
