@@ -53,7 +53,7 @@
   /* cards */
   .grid{display:grid;gap:16px}
   .g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
-  .card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .card{position:relative;background:linear-gradient(180deg,#fffdf8,#fcf6ec);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
   .card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,var(--bronze),var(--terra),var(--gold),var(--sage))}
   .card h3{color:var(--bronze-d);display:flex;align-items:center;gap:8px}
   .card.tight{padding:14px 16px}
@@ -112,7 +112,24 @@
   iframe{width:100%;height:560px;border:1px solid var(--line);border-radius:12px;background:#fff}
   .note{background:var(--panel2);border-left:3px solid var(--bronze);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.88rem;color:var(--muted);margin:8px 0}
   .tag{font-size:.7rem;color:var(--muted)}
-  .linkbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .linkbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  /* clickable list rows */
+  .lk{cursor:pointer;transition:.12s}
+  ul.clean li.lk:hover{background:#fbf3ea;border-radius:8px;padding-left:8px;padding-right:8px}
+  ul.clean li.lk .go{color:var(--terra);opacity:0;transition:.12s}
+  ul.clean li.lk:hover .go{opacity:1}
+  /* photo galleries */
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+  .gallery a{display:block;overflow:hidden;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .gallery img{width:100%;height:135px;object-fit:cover;display:block;transition:.25s}
+  .gallery a:hover img{transform:scale(1.06)}
+  .drop{border:2px dashed var(--terra);background:#fbf2e9;border-radius:12px;padding:18px 16px;text-align:center;color:var(--terra-d);font-size:.9rem;margin-top:12px}
+  .drop b{color:var(--bronze-d)}
+  /* extra colour touches */
+  ul.dot li::marker{color:var(--terra)}
+  .kv dt{color:var(--sage-d)}
+  tr.total td{color:var(--terra-d)}
+  .mapframe{height:300px}
   .topbar{display:none}
   @media(max-width:860px){
     .layout{flex-direction:column}
@@ -316,26 +333,26 @@ function tab_dashboard(){
       <div class="card tight"><div class="stat">16:00</div><div class="stat-lbl">Ceremony</div></div>
     </div>
     <div class="grid g2 sec">
-      <div class="card"><h3>✦ Vendor status</h3>
+      <div class="card"><h3>✦ Vendor status <span class="tag">(tap to open)</span></h3>
         <ul class="clean">
-          <li>Venue — Marriott Praia D'El Rey <span class="pill ok">Booked</span></li>
-          <li>Photographer — Lia Rodrigues <span class="pill ok">Booked</span></li>
-          <li>DJ — Bruno (FixTheMusic) <span class="pill ok">Booked</span></li>
-          <li>Coordinator — Cátia (Ode Stories) <span class="pill ok">Confirmed</span></li>
-          <li>Floral & Design — Helart <span class="pill warn">Finalizing</span></li>
-          <li>Bridal gown — Academia das Noivas <span class="pill ok">Confirmed</span></li>
+          <li class="lk" onclick="render('venue')">Venue — Marriott Praia D'El Rey <span><span class="pill ok">Booked</span> <span class="go">›</span></span></li>
+          <li class="lk" onclick="render('photo')">Photographer — Lia Rodrigues <span><span class="pill ok">Booked</span> <span class="go">›</span></span></li>
+          <li class="lk" onclick="render('dj')">DJ — Bruno (FixTheMusic) <span><span class="pill ok">Booked</span> <span class="go">›</span></span></li>
+          <li class="lk" onclick="render('coordinator')">Coordinator — Cátia (Ode Stories) <span><span class="pill ok">Confirmed</span> <span class="go">›</span></span></li>
+          <li class="lk" onclick="render('floral')">Floral & Design — Helart <span><span class="pill warn">Finalizing</span> <span class="go">›</span></span></li>
+          <li class="lk" onclick="render('bridal')">Bridal gown — Academia das Noivas <span><span class="pill ok">Confirmed</span> <span class="go">›</span></span></li>
           <li>Hair & Makeup <span class="pill todo">To book</span></li>
           <li>Cake <span class="pill todo">To book</span></li>
         </ul>
       </div>
-      <div class="card"><h3>€ Budget snapshot</h3>
+      <div class="card"><h3>€ Budget snapshot <span class="tag">(tap to open)</span></h3>
         <ul class="clean">
-          <li>Floral & Design (Helart, base) <b>€4,541.50</b></li>
-          <li>Photographer (Lia) <b>€1,875.00</b></li>
-          <li>DJ (Bruno) <b>€1,600.00</b></li>
-          <li>Bridal gown (Academia) <b>€1,500</b> <span class="muted">agreed</span></li>
-          <li>Coordinator (Cátia) <span class="muted">+ €57 travel</span></li>
-          <li>Venue · Hair/Makeup · Cake <span class="muted">TBD</span></li>
+          <li class="lk" onclick="render('floral')">Floral & Design (Helart, base) <b>€4,541.50</b></li>
+          <li class="lk" onclick="render('photo')">Photographer (Lia) <b>€1,875.00</b></li>
+          <li class="lk" onclick="render('dj')">DJ (Bruno) <b>€1,600.00</b></li>
+          <li class="lk" onclick="render('bridal')">Bridal gown (Academia) <b>€1,500</b> <span class="muted">agreed</span></li>
+          <li class="lk" onclick="render('coordinator')">Coordinator (Cátia) <span class="muted">+ €57 travel</span></li>
+          <li class="lk" onclick="render('budget')">Full budget vs plan <span class="go">›</span></li>
         </ul>
         <div class="note">Deposits paid: DJ €560 · Photographer €560. Next: Helart 50% (<b>€2,270.75</b>).</div>
       </div>
@@ -344,8 +361,8 @@ function tab_dashboard(){
       <div class="linkbtns">
         <a class="btn ghost" href="https://carynandlarswedding.com/" target="_blank">Public wedding site</a>
         <a class="btn ghost" href="https://caryn-pids.github.io/wedding-ceremony-plan/" target="_blank">Ceremony floor plan</a>
+        <a class="btn ghost" href="https://caryn-pids.github.io/wedding-ceremony-plan/reception.html" target="_blank">Reception plan</a>
       </div>
-      <div class="note" style="margin-top:14px">Caryn leads planning, guests & family · Lars coordinates venue design with Helart & Marriott · A same-day coordinator takes over ~1 month before.</div>
     </div>`;
 }
 
@@ -498,15 +515,18 @@ function tab_venue(){
   + `<div class="grid g2">
       <div class="card"><h3>Key details</h3>
         <dl class="kv">
-          <dt>Resort</dt><dd>Marriott Beach &amp; Golf Resort, Praia D'El Rey</dd>
-          <dt>Town</dt><dd>Óbidos, Portugal</dd>
+          <dt>Resort</dt><dd>Praia D'El Rey Marriott Golf &amp; Beach Resort</dd>
+          <dt>Address</dt><dd>Av. D. Inês de Castro 1, Vale de Janelas, 2510-451 Amoreira, Óbidos</dd>
           <dt>Date</dt><dd>Sat 24 July 2027</dd>
           <dt>Ceremony</dt><dd>16:00 · clifftop gardens</dd>
           <dt>Cocktail</dt><dd>Same lawn, after ceremony</dd>
           <dt>Reception</dt><dd>Covered terrace · U-layout</dd>
           <dt>Guests</dt><dd>~60–70</dd>
-          <dt>Tables/chairs</dt><dd>Rect. tables by Marriott · crossback chairs via Helart</dd>
+          <dt>Website</dt><dd><a href="https://www.marriott.com/en-us/hotels/lisdr-praia-delrey-marriott-golf-and-beach-resort/overview/" target="_blank">marriott.com ↗</a></dd>
         </dl>
+        <div class="linkbtns">
+          <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=Praia+D%27El+Rey+Marriott+Golf+%26+Beach+Resort" target="_blank">Open in Google Maps ↗</a>
+        </div>
       </div>
       <div class="card"><h3>To confirm with venue</h3>
         <ul class="dot">
@@ -518,6 +538,12 @@ function tab_venue(){
           <li>Guest transport / parking</li>
         </ul>
       </div>
+    </div>
+    <div class="card sec"><h3>📍 Map</h3>
+      <iframe class="mapframe" loading="lazy" src="https://maps.google.com/maps?q=Praia%20D'El%20Rey%20Marriott%20Golf%20%26%20Beach%20Resort%2C%20%C3%93bidos&t=&z=13&ie=UTF8&iwloc=&output=embed" title="Venue map"></iframe>
+    </div>
+    <div class="card sec"><h3>📸 Venue photos</h3>
+      <div class="drop">Drop venue photos into <b>~/Desktop/Wedding 2027/Hub Assets/venue/</b> and tell Claude — I'll place them here. (The public wedding site is JavaScript-rendered, so I couldn't auto-pull them.)</div>
     </div>`;
 }
 
@@ -533,6 +559,10 @@ function tab_floral(){
           <dt>Shop</dt><dd>+351 262 843 149</dd>
           <dt>Location</dt><dd>Caldas da Rainha</dd>
         </dl>
+        <div class="linkbtns">
+          <a class="btn ghost" href="https://www.helart.pt/" target="_blank">helart.pt ↗</a>
+          <a class="btn ghost" href="https://www.instagram.com/helart_pt/" target="_blank">Instagram ↗</a>
+        </div>
         <div class="note">Status: finalizing 2nd quote with our adjustments. Next: confirm final figure → pay 50% to reserve.</div>
       </div>
       <div class="card"><h3>Palette &amp; materials</h3>
@@ -573,6 +603,9 @@ function tab_floral(){
         <li>Dismantle after event (business-day collection)</li>
       </ul>
       <div class="note">Adjustments allowed up to 1 month before · final payment week before the wedding.</div>
+    </div>
+    <div class="card sec"><h3>🎨 Design proposal reference</h3>
+      <div class="drop">Drop Helart's proposal / mockup images into <b>~/Desktop/Wedding 2027/Hub Assets/helart/</b> and tell Claude — I'll display the design references here.</div>
     </div>`;
 }
 
@@ -659,6 +692,10 @@ function tab_photo(){
         <dt>Base</dt><dd>Sintra · ~1h to venue</dd>
         <dt>Package</dt><dd>Enchantment · up to 12h</dd>
         <dt>Includes</dt><dd>2 photographers · engagement session · private gallery</dd></dl>
+        <div class="linkbtns">
+          <a class="btn ghost" href="https://www.liarodriguesphotography.com/" target="_blank">Website ↗</a>
+          <a class="btn ghost" href="https://www.instagram.com/liarodrigues_photography/" target="_blank">Instagram ↗</a>
+        </div>
       </div>
       <div class="card"><h3>Payments (30 / 50 / 20)</h3>
         <table><tbody>
@@ -684,6 +721,15 @@ function tab_photo(){
         <li>Reception room before guests enter</li><li>Candid dancing &amp; speeches</li></ul>
       </div>
       <div class="note">Tip: give the photographer the family-group list in advance so cocktail hour stays efficient.</div>
+    </div>
+    <div class="card sec"><h3>📸 Lia's work</h3>
+      <div class="gallery">
+        ${["169168/loreta_e_antonio_noivos_apaixonados-55","169169/vera_e_daniel_noivos_apaixonados-75","169170/happy_vera_e_raul_2020-143","169172/happy_paula_e_ricardo_2018-22","193773/ines_e_mauro_noivos_apaixonados-112","197072/in_love__vera_e_daniel-55"].map(p=>{
+          const u="https://alfred.alboompro.com/crop/width/560/height/380/type/jpeg/url/storage.alboom.ninja/sites/10321/featured_images/"+p+".jpg";
+          return '<a href="https://www.liarodriguesphotography.com/" target="_blank"><img loading="lazy" src="'+u+'" alt="Lia Rodrigues photography"></a>';
+        }).join("")}
+      </div>
+      <div class="note">Samples from <a href="https://www.liarodriguesphotography.com/" target="_blank">liarodriguesphotography.com</a> — emotional, natural, editorial.</div>
     </div>`;
 }
 
@@ -744,7 +790,11 @@ function tab_coordinator(){
         <dt>Payment</dt><dd>50% booking · 50% week before</dd>
         <dt>Handover</dt><dd>~24 Jun 2027 (1 month out)</dd>
         <dt>End time</dt><dd>Party to 02:00 (Marriott covers 2h post-midnight)</dd></dl>
-        <div class="note">Until handover: Caryn plans + guests/family; Lars owns venue design with Helart &amp; Marriott. To do: sign service agreement, intro call (July), send Caryn's legal name/address/phone.</div>
+        <div class="linkbtns">
+          <a class="btn ghost" href="https://www.odestories.pt/" target="_blank">odestories.pt ↗</a>
+          <a class="btn ghost" href="https://www.instagram.com/odestories/" target="_blank">Instagram ↗</a>
+        </div>
+        <div class="note">To do: sign service agreement · intro call (July) · send Caryn's legal name / address / phone.</div>
       </div>
       <div class="card"><h3>Handover pack to prepare</h3>
         <ul class="dot"><li>Final day-of timeline</li><li>Vendor contact sheet (all numbers)</li>
@@ -775,6 +825,10 @@ function tab_bridal(){
           <dt>Model</dt><dd>“Light of Lace” · Pearl Edition · Coll. 2026</dd>
           <dt>Price</dt><dd>€1,500 (approved 18 Jun 2026)</dd>
         </dl>
+        <div class="linkbtns">
+          <a class="btn ghost" href="mailto:academiadasnoivas@hotmail.com">Email ↗</a>
+          <a class="btn ghost" href="https://www.google.com/search?q=Academia+das+Noivas+Atelier+Set%C3%BAbal" target="_blank">Find online ↗</a>
+        </div>
         <div class="note">Caryn accepted — “officially in.” Doing everything in person on Visit 1 (no online). Lace now in store to view. Awaiting Sónia's reply on date / deposit / payment split / what to bring.</div>
       </div>
       <div class="card"><h3>The design</h3>
@@ -803,6 +857,9 @@ function tab_bridal(){
         </ul>
         <div class="note">Climate note: 24 Jul, 16:00, 25–35°C coastal — light, breathable build (this gown's tulle + illusion fits well).</div>
       </div>
+    </div>
+    <div class="card sec"><h3>👗 Gown concept from Sónia</h3>
+      <div class="drop">Drop Sónia's <b>croqui descritivo</b> (the “Light of Lace” design sheet) + lace photos into <b>~/Desktop/Wedding 2027/Hub Assets/gown/</b> and tell Claude — I'll display the concept here.</div>
     </div>
     <div class="card sec"><h3>Awaiting from Sónia · then to do</h3>
       <div class="grid g2">
