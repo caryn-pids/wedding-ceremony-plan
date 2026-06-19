@@ -125,6 +125,7 @@
   .gallery a{display:block;overflow:hidden;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow)}
   .gallery img{width:100%;height:135px;object-fit:cover;display:block;transition:.25s}
   .gallery a:hover img{transform:scale(1.06)}
+  .feature{display:block;width:100%;max-height:600px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-top:12px}
   .drop{border:2px dashed var(--terra);background:#fbf2e9;border-radius:12px;padding:18px 16px;text-align:center;color:var(--terra-d);font-size:.9rem;margin-top:12px}
   .drop b{color:var(--bronze-d)}
   .gwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:12px}
@@ -913,17 +914,18 @@ function tab_bridal(){
         <div class="note">Climate note: 24 Jul, 16:00, 25–35°C coastal — light, breathable build (this gown's tulle + illusion fits well).</div>
       </div>
     </div>
-    <div class="card sec"><h3>👗 Sónia's concept — croqui &amp; lace</h3>
-      <div class="gallery">
-        ${["gown-croqui.jpg","gown-lace-1.jpg","gown-lace-2.jpg","gown-lace-3.jpg","gown-lace-4.jpg"].map(f=>{
+    <div class="card sec"><h3>👗 Sónia's concept — “Light of Lace”</h3>
+      <a href="https://caryn-pids.github.io/wedding-ceremony-plan/assets/gown/gown-croqui.jpg" target="_blank"><img class="feature" loading="lazy" src="https://caryn-pids.github.io/wedding-ceremony-plan/assets/gown/gown-croqui.jpg" alt="Light of Lace croqui"></a>
+      <div class="gallery cols4">
+        ${["gown-lace-1.jpg","gown-lace-2.jpg","gown-lace-3.jpg","gown-lace-4.jpg"].map(f=>{
           const u="https://caryn-pids.github.io/wedding-ceremony-plan/assets/gown/"+f;
-          return '<a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="Light of Lace concept"></a>';
+          return '<a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="Pearl floral lace"></a>';
         }).join("")}
       </div>
-      <div class="note">“Light of Lace” · Pearl Edition croqui descritivo + the actual pearl floral lace (now in store to view).</div>
+      <div class="note">Pearl Edition croqui descritivo (tap to view full) + the actual pearl floral lace, now in store to see.</div>
     </div>
     <div class="card sec"><h3>💭 Caryn's ideal gown — inspiration</h3>
-      <div class="gallery">
+      <div class="gallery cols4">
         ${["ideal-1.png","ideal-2.png","ideal-3.png","ideal-4.png"].map(f=>{
           const u="https://caryn-pids.github.io/wedding-ceremony-plan/assets/gown/"+f;
           return '<a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="Ideal gown inspiration"></a>';
