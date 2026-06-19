@@ -570,7 +570,11 @@ function tab_venue(){
       <iframe class="mapframe" loading="lazy" src="https://maps.google.com/maps?q=Praia%20D'El%20Rey%20Marriott%20Golf%20%26%20Beach%20Resort%2C%20%C3%93bidos&t=&z=13&ie=UTF8&iwloc=&output=embed" title="Venue map"></iframe>
     </div>
     <div class="card sec"><h3>📸 Venue photos</h3>
-      <div class="drop">Drop venue photos into <b>~/Desktop/Wedding 2027/Hub Assets/venue/</b> and tell Claude — I'll place them here. (The public wedding site is JavaScript-rendered, so I couldn't auto-pull them.)</div>
+      <div class="gallery">
+        ${["1LHU4uCwEFznpRLIdhxkaANZG1JSIMiH6","1MmrSFqpI0pijNnb6hRtB-zBdiCNTkDdZ","1spQftT-5R8XHwKLNgdopwk6t_lhMqObC","1WFvfroYYWisa70VxpbcgNiYeAD1ysxgP","1wZrg1wODo_9yYwDq-ouC-4yedmbNNm5C","1di19xqRp_W0gYycwLCDCRPRznJd0zHiy"].map(id=>
+          '<a href="https://drive.google.com/file/d/'+id+'/view" target="_blank"><img loading="lazy" src="https://drive.google.com/thumbnail?id='+id+'&sz=w1200" alt="Praia D\\'El Rey Marriott"></a>').join("")}
+      </div>
+      <div class="note">From your Drive “good quality venue photos”. <b>If the photos show broken:</b> set that Drive folder to <b>Anyone with the link → Viewer</b> and they'll appear everywhere — or tell Claude to self-host them in the repo instead.</div>
     </div>`;
 }
 
