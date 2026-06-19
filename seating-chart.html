@@ -10,9 +10,11 @@
  .stat b{color:#9d7444;font-family:'Cormorant Garamond',serif;font-size:1.1rem}
  .head{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:6px}
  .body{display:flex;justify-content:center;gap:10px;align-items:stretch}
- .arm{display:flex;gap:6px}
+ .arm{display:flex;gap:6px;align-items:stretch}
  .colw{display:flex;flex-direction:column;gap:6px}
  .colw .lbl{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:#a99a7c;text-align:center;margin-bottom:2px}
+ .colw .seats{display:flex;flex-direction:column;gap:6px;flex:1}
+ .colw.btm .seats{justify-content:flex-end}
  .center{display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:200px}
  .floor{flex:1;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,#f3e7d2,#f3e7d2 9px,#eddcc0 9px,#eddcc0 18px);border:2px solid #d8c29a;border-radius:12px;color:#a5612f;font-family:'Cormorant Garamond',serif;font-style:italic;letter-spacing:3px;font-size:1.2rem;min-height:120px}
  .svc{display:flex;gap:8px;justify-content:space-between}
@@ -30,7 +32,7 @@
  .note{background:#fffdf8;border-left:3px solid #bf7849;border-radius:0 8px 8px 0;padding:10px 14px;margin-top:16px;font-size:.85rem;color:#6f6857}
 </style></head><body><div class="wrap">
 <h1>Seating Chart — U-Layout · 70</h1>
-<div class="sub">Couple at seats 8 &amp; 9 · entrance at the bottom · matches the numbered floor plan</div>
+<div class="sub">Couple at seats 8 &amp; 9 · entrance at the bottom · inner columns sit lower (bottoms align, like the floor plan)</div>
 <div><span class="stat"><b>61</b> seated</span><span class="stat"><b>9</b> open</span><span class="stat"><b>70</b> total</span></div>
 <div class="head"><div class="seat   "><span class="num">1</span><span class="nm">Per</span></div>
 <div class="seat   "><span class="num">2</span><span class="nm">Tove</span></div>
@@ -50,7 +52,7 @@
 <div class="seat   "><span class="num">16</span><span class="nm">Frank</span><span class="rk">Fida's husband</span></div></div>
 <div class="body">
   <div class="arm">
-    <div class="colw"><div class="lbl">L · outer</div><div class="seat   "><span class="num">17</span><span class="nm">Emma</span></div>
+    <div class="colw"><div class="lbl">L · outer</div><div class="seats"><div class="seat   "><span class="num">17</span><span class="nm">Emma</span></div>
 <div class="seat   "><span class="num">18</span><span class="nm">Rasmus</span></div>
 <div class="seat   "><span class="num">19</span><span class="nm">Child 1</span><span class="rk">Anders'</span></div>
 <div class="seat   "><span class="num">20</span><span class="nm">Child 2</span><span class="rk">Anders'</span></div>
@@ -64,8 +66,8 @@
 <div class="seat open  "><span class="num">28</span><span class="nm">— open —</span></div>
 <div class="seat open  "><span class="num">29</span><span class="nm">— open —</span></div>
 <div class="seat open  "><span class="num">30</span><span class="nm">— open —</span></div>
-<div class="seat open  "><span class="num">31</span><span class="nm">— open —</span></div></div>
-    <div class="colw"><div class="lbl">L · inner</div><div class="seat   "><span class="num">32</span><span class="nm">Child 1</span><span class="rk">Mette's</span></div>
+<div class="seat open  "><span class="num">31</span><span class="nm">— open —</span></div></div></div>
+    <div class="colw btm"><div class="lbl">L · inner</div><div class="seats"><div class="seat   "><span class="num">32</span><span class="nm">Child 1</span><span class="rk">Mette's</span></div>
 <div class="seat   "><span class="num">33</span><span class="nm">Child 2</span><span class="rk">Mette's</span></div>
 <div class="seat   "><span class="num">34</span><span class="nm">Mette</span></div>
 <div class="seat   "><span class="num">35</span><span class="nm">Husband</span><span class="rk">Mette's</span></div>
@@ -76,14 +78,14 @@
 <div class="seat open  "><span class="num">40</span><span class="nm">— open —</span></div>
 <div class="seat open  "><span class="num">41</span><span class="nm">— open —</span></div>
 <div class="seat open  "><span class="num">42</span><span class="nm">— open —</span></div>
-<div class="seat open  "><span class="num">43</span><span class="nm">— open —</span></div></div>
+<div class="seat open  "><span class="num">43</span><span class="nm">— open —</span></div></div></div>
   </div>
   <div class="center">
     <div class="floor">DANCE&nbsp;FLOOR</div>
     <div class="svc"><div class="cake">🎂 Cake</div><div class="bar">Bar</div><div class="dj">DJ</div></div>
   </div>
   <div class="arm">
-    <div class="colw"><div class="lbl">R · inner</div><div class="seat   "><span class="num">44</span><span class="nm">Child 1</span><span class="rk">Hertz's</span></div>
+    <div class="colw btm"><div class="lbl">R · inner</div><div class="seats"><div class="seat   "><span class="num">44</span><span class="nm">Child 1</span><span class="rk">Hertz's</span></div>
 <div class="seat   "><span class="num">45</span><span class="nm">Child 2</span><span class="rk">Hertz's</span></div>
 <div class="seat   "><span class="num">46</span><span class="nm">Wife</span><span class="rk">Hertz's</span></div>
 <div class="seat   "><span class="num">47</span><span class="nm">Hertz</span></div>
@@ -94,8 +96,8 @@
 <div class="seat   "><span class="num">52</span><span class="nm">Thomas Hørlykke</span></div>
 <div class="seat   "><span class="num">53</span><span class="nm">Kath</span></div>
 <div class="seat   "><span class="num">54</span><span class="nm">Yves</span></div>
-<div class="seat   "><span class="num">55</span><span class="nm">Michael</span></div></div>
-    <div class="colw"><div class="lbl">R · outer</div><div class="seat   "><span class="num">56</span><span class="nm">Kernel</span></div>
+<div class="seat   "><span class="num">55</span><span class="nm">Michael</span></div></div></div>
+    <div class="colw"><div class="lbl">R · outer</div><div class="seats"><div class="seat   "><span class="num">56</span><span class="nm">Kernel</span></div>
 <div class="seat   "><span class="num">57</span><span class="nm">Michelle</span></div>
 <div class="seat   "><span class="num">58</span><span class="nm">Syed</span><span class="rk">Michelle's husband</span></div>
 <div class="seat   "><span class="num">59</span><span class="nm">Gunnar</span></div>
@@ -109,8 +111,8 @@
 <div class="seat   "><span class="num">67</span><span class="nm">Thomas Friis</span></div>
 <div class="seat   "><span class="num">68</span><span class="nm">Michelle</span></div>
 <div class="seat   "><span class="num">69</span><span class="nm">Angelica</span></div>
-<div class="seat   "><span class="num">70</span><span class="nm">Fatima</span></div></div>
+<div class="seat   "><span class="num">70</span><span class="nm">Fatima</span></div></div></div>
   </div>
 </div>
-<div class="note"><b>To check:</b> Seat 5 “Marianne &amp; Benjamin” is 2 people in 1 seat — split into two seats. 9 seats still open (27–31, 40–43). “Child / Wife / Husband” are placeholders you can name later.</div>
+<div class="note"><b>To check:</b> Seat 5 “Marianne &amp; Benjamin” is 2 people in 1 seat — split into two. 9 seats still open (27–31, 40–43). “Child / Wife / Husband” are placeholders to name later.</div>
 </div></body></html>
