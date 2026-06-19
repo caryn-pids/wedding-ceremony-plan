@@ -909,8 +909,22 @@ function tab_bridal(){
         <div class="note">Climate note: 24 Jul, 16:00, 25–35°C coastal — light, breathable build (this gown's tulle + illusion fits well).</div>
       </div>
     </div>
-    <div class="card sec"><h3>👗 Gown concept from Sónia</h3>
-      <div class="drop">Drop Sónia's <b>croqui descritivo</b> (the “Light of Lace” design sheet) + lace photos into <b>~/Desktop/Wedding 2027/Hub Assets/gown/</b> and tell Claude — I'll display the concept here.</div>
+    <div class="card sec"><h3>👗 Sónia's concept — croqui &amp; lace</h3>
+      <div class="gallery">
+        ${["gown-croqui.jpg","gown-lace-1.jpg","gown-lace-2.jpg","gown-lace-3.jpg","gown-lace-4.jpg"].map(f=>{
+          const u="https://caryn-pids.github.io/wedding-ceremony-plan/assets/gown/"+f;
+          return '<a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="Light of Lace concept"></a>';
+        }).join("")}
+      </div>
+      <div class="note">“Light of Lace” · Pearl Edition croqui descritivo + the actual pearl floral lace (now in store to view).</div>
+    </div>
+    <div class="card sec"><h3>💭 Caryn's ideal gown — inspiration</h3>
+      <div class="gallery">
+        ${["ideal-1.png","ideal-2.png","ideal-3.png","ideal-4.png"].map(f=>{
+          const u="https://caryn-pids.github.io/wedding-ceremony-plan/assets/gown/"+f;
+          return '<a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="Ideal gown inspiration"></a>';
+        }).join("")}
+      </div>
     </div>
     <div class="card sec"><h3>Awaiting from Sónia · then to do</h3>
       <div class="grid g2">
