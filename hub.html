@@ -571,10 +571,12 @@ function tab_venue(){
     </div>
     <div class="card sec"><h3>📸 Venue photos</h3>
       <div class="gallery">
-        ${[["venue-1","Resort exterior"],["venue-2","Terrace (reception)"],["venue-3","Reception hall"],["venue-4","Dining"],["venue-5","Ocean-side view"],["venue-6","Lounge"]].map(([f,c])=>
-          '<a href="https://caryn-pids.github.io/wedding-ceremony-plan/assets/venue/'+f+'.jpg" target="_blank"><img loading="lazy" src="https://caryn-pids.github.io/wedding-ceremony-plan/assets/venue/'+f+'.jpg" alt="'+c+'"></a>').join("")}
+        ${["praia-5","praia-7","praia-14","praia-9","praia-10","praia-13","praia-4"].map(f=>{
+          const u="https://caryn-pids.github.io/wedding-ceremony-plan/assets/venue/"+f+".jpg";
+          return '<a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="Praia D\\'El Rey Marriott"></a>';
+        }).join("")}
       </div>
-      <div class="note">Praia D'El Rey Marriott — exterior, the covered terrace (your reception), reception hall, dining, ocean view &amp; lounge.</div>
+      <div class="note">Praia D'El Rey Marriott — selected venue shots.</div>
     </div>`;
 }
 
