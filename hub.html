@@ -125,6 +125,8 @@
   .gallery a:hover img{transform:scale(1.06)}
   .drop{border:2px dashed var(--terra);background:#fbf2e9;border-radius:12px;padding:18px 16px;text-align:center;color:var(--terra-d);font-size:.9rem;margin-top:12px}
   .drop b{color:var(--bronze-d)}
+  .gwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:12px}
+  ul.clean.sm li{font-size:.85rem;padding:5px 0}
   /* extra colour touches */
   ul.dot li::marker{color:var(--terra)}
   .kv dt{color:var(--sage-d)}
@@ -264,6 +266,31 @@ const DAYOF = [
   ["02:00","Last song / send-off (Marriott covers 2h post-midnight)"],
 ];
 
+/* guest list (from "Wedding 2027 invitation plan" sheet) — [household, invitationSent] */
+const GUEST_BOUNDS = {low:55, realistic:65, high:70};
+const GUESTLIST = {
+  "Lars · Family":[
+    ["Lars",1],["Caryn",1],["Lucas",1],["Dad",1],["Pia",1],["Marianne",1],["Benjamin",1],["Emma",1],
+    ["Rasmus",1],["Gunnar",1],["Jenny",1],["Marcus",1],["Tove",1],["Per",1],
+    ["Anders + wife + 2 children",1],["Lis + Jens",1],["Mette + husband + 2 children",1],["Mads",1],["Christian + Juliana",1]
+  ],
+  "Lars · Friends":[
+    ["Carlsson",1],["Bloch",1],["Thomas Hørlykke + Kath",1],["Max + Mathilde",1],["Hertz + 3",1],
+    ["Thomas Friis + Michelle",1],["William W.",1],["Edwin + Naomi + child",1],["Anders Hussing + Olya",1],
+    ["Kasper Lindberg",1],["Nima + wife",1],["Anders + Denise",1],["Jan Christensen + wife",1]
+  ],
+  "Caryn · Family":[
+    ["Sister (US) + husband + 2 children",0],["Sister (UAE) + husband",1],["Caryn's parents",0]
+  ],
+  "Caryn · Friends":[
+    ["Ives",0],["Angelica",0],["Amor",0],["Fatima",0],["Seda + Levent + child",0],
+    ["Sol + Ken",0],["Ruby + husband + child",0],["Fida + husband",0]
+  ],
+  "Portugal · Local friends":[
+    ["Michelle + Kernel + husband",1],["Camilla + Philip + child",0]
+  ]
+};
+
 /* planning timeline (high level) */
 const TIMELINE = [
   ["Done","Venue secured — Marriott Praia D'El Rey, Óbidos"],
@@ -328,7 +355,7 @@ function tab_dashboard(){
   return pagehead("Overview","Welcome back","Everything for 24 July 2027 at Marriott Praia D'El Rey — design, vendors, guests, logistics and the day-of plan, all in one place.")
   + `<div class="grid g4">
       <div class="card tight"><div class="stat" id="dashDays">—</div><div class="stat-lbl">Days to go</div></div>
-      <div class="card tight"><div class="stat">~70</div><div class="stat-lbl">Guests</div></div>
+      <div class="card tight"><div class="stat">≈65</div><div class="stat-lbl">Guests (55–70)</div></div>
       <div class="card tight"><div class="stat">${pct}%</div><div class="stat-lbl">Checklist done</div></div>
       <div class="card tight"><div class="stat">16:00</div><div class="stat-lbl">Ceremony</div></div>
     </div>
@@ -752,31 +779,51 @@ function tab_seating(){
 }
 
 function tab_guests(){
-  return pagehead("Our People","Guests","~60–70 guests. Track groups, RSVPs, travel and special needs.")
-  + `<div class="grid g2">
-      <div class="card"><h3>Headcount</h3>
-        <dl class="kv"><dt>Estimated</dt><dd>~60–70</dd><dt>Ceremony seats</dt><dd>70 (current plan)</dd>
-        <dt>Reception</dt><dd>U-layout ~70</dd><dt>RSVPs</dt><dd class="muted">TBD</dd></dl>
-      </div>
-      <div class="card"><h3>Key groups</h3>
+  const groups=Object.keys(GUESTLIST);
+  let house=0,sent=0,pend=0;
+  groups.forEach(g=>GUESTLIST[g].forEach(([n,s])=>{house++; s?sent++:pend++;}));
+  const cards=groups.map(g=>{
+    const list=GUESTLIST[g];
+    const gs=list.filter(x=>x[1]).length;
+    const rows=list.map(([n,s])=>`<li>${esc(n)} <span class="pill ${s?'ok':'todo'}">${s?'sent':'to send'}</span></li>`).join("");
+    return `<div class="card"><h3>${esc(g)} <span class="tag">${list.length} · ${gs} sent</span></h3><ul class="clean sm">${rows}</ul></div>`;
+  }).join("");
+  return pagehead("Our People","Guests","Invited list from your invitation plan. Realistic headcount ≈ 65 (range 55–70).")
+  + `<div class="grid g3">
+      <div class="card tight"><div class="stat">${GUEST_BOUNDS.low}</div><div class="stat-lbl">Lower bound</div></div>
+      <div class="card tight"><div class="stat">${GUEST_BOUNDS.realistic}</div><div class="stat-lbl">Realistic</div></div>
+      <div class="card tight"><div class="stat">${GUEST_BOUNDS.high}</div><div class="stat-lbl">Upper bound</div></div>
+    </div>
+    <div class="grid g2 sec">
+      <div class="card"><h3>Invitations</h3>
         <ul class="clean">
-          <li>Caryn's sisters <span class="pill warn">Villa accom.</span></li>
-          <li>Dubai Filipino friends (5) <span class="pill pend">Visa support</span></li>
-          <li>Family — PT &amp; abroad <span class="pill todo">List</span></li>
-          <li>Friends <span class="pill todo">List</span></li>
+          <li>Households on the list <b>${house}</b></li>
+          <li>Invitations sent <span class="pill ok">${sent}</span></li>
+          <li>Still to send <span class="pill todo">${pend}</span></li>
+        </ul>
+        <div class="note">“Sent” = invitation already delivered. Mostly Caryn-side family &amp; friends + one PT household still to send.</div>
+      </div>
+      <div class="card"><h3>Special needs</h3>
+        <ul class="dot">
+          <li>Caryn's sisters (US + UAE) — <b>villa accommodation</b></li>
+          <li>Overseas guests — <b>visa support letters</b> (UAE etc.)</li>
+          <li>Several households with <b>children</b> → kids plan (nannies, sleep room)</li>
+          <li>Guests from many countries → travel + accommodation guidance</li>
         </ul>
       </div>
     </div>
+    <div class="sec"><h2>By group</h2></div>
+    <div class="gwrap">${cards}</div>
     <div class="card sec"><h3>Guest workstreams</h3>
       <ul class="dot">
-        <li>Build master guest list + contact details</li>
-        <li>Send invitations &amp; track RSVPs</li>
+        <li>Send remaining invitations (${pend} households)</li>
+        <li>Track RSVPs &amp; lock final headcount</li>
         <li>Collect dietary requirements</li>
-        <li>Visa support letters for the 5 Dubai friends</li>
+        <li>Visa support letters — overseas guests</li>
         <li>Villa booking for sisters</li>
-        <li>Transport / shuttle &amp; accommodation guidance</li>
+        <li>Family-group photo list for Lia</li>
       </ul>
-      <div class="note">Want a sortable guest-list table (RSVP, meal, group, +1)? Say the word and I'll add it here.</div>
+      <div class="note">Source: “Wedding 2027 invitation plan” (Google Drive). Tell Claude when invitations go out or RSVPs come in and I'll update.</div>
     </div>`;
 }
 
