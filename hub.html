@@ -287,11 +287,11 @@ const GUESTLIST = {
     ["Sister (US) + husband + 2 children",0,4],["Sister (UAE)",1,1]
   ],
   "Caryn · Friends":[
-    ["Ives",0,1],["Angelica",0,1],["Amor",0,1],["Fatima",0,1],["Seda + Levent + child",0,3],
-    ["Ruby + husband + child",0,3],["Fida + husband",0,2]
+    ["Ives",0,1],["Angelica",0,1],["Amor",0,1],["Fatima",0,1],
+    ["Ruby + husband",0,2],["Fida + husband",0,2]
   ],
   "Portugal · Local friends":[
-    ["Michelle + Kernel + husband",1,3],["Camilla + Philip + child",0,3]
+    ["Michelle + Kernel + husband",1,3],["Camilla + Philip",0,2]
   ]
 };
 
@@ -359,7 +359,7 @@ function tab_dashboard(){
   return pagehead("Overview","Welcome back","Everything for 24 July 2027 at Marriott Praia D'El Rey — design, vendors, guests, logistics and the day-of plan, all in one place.")
   + `<div class="grid g4">
       <div class="card tight"><div class="stat" id="dashDays">—</div><div class="stat-lbl">Days to go</div></div>
-      <div class="card tight"><div class="stat">75</div><div class="stat-lbl">Invited · 70 seats</div></div>
+      <div class="card tight"><div class="stat">70</div><div class="stat-lbl">Invited = 70 seats</div></div>
       <div class="card tight"><div class="stat">${pct}%</div><div class="stat-lbl">Checklist done</div></div>
       <div class="card tight"><div class="stat">16:00</div><div class="stat-lbl">Ceremony</div></div>
     </div>
@@ -813,13 +813,16 @@ function tab_guests(){
           <li>Invitations sent <span class="pill ok">${sent}</span></li>
           <li>Still to send <span class="pill todo">${pend}</span></li>
         </ul>
-        <div class="note">${heads} invited vs <b>70 chairs</b> — ${diff>0?`<b>${diff} over</b>; final seated number follows RSVPs (not all may attend).`:`${-diff} spare.`} Realistic attendance ≈ 65.</div>
+        <div class="note">${heads} invited vs <b>70 chairs</b> — ${diff>0?`<b>${diff} over</b>; final number follows RSVPs.`:diff===0?`a <b>perfect match</b> 🎉 (final follows RSVPs).`:`<b>${-diff} spare</b>.`}</div>
       </div>
       <div class="card"><h3>Recently removed</h3>
         <ul class="dot">
           <li>Caryn's parents — not coming</li>
           <li>UAE sister — husband not coming (sister only)</li>
           <li>Sol + Ken — not coming</li>
+          <li>Seda + Levent + child — not coming</li>
+          <li>Ruby's child — not coming (Ruby + husband only)</li>
+          <li>Camilla &amp; Philip's child — not coming (couple only)</li>
         </ul>
         <div class="note">Special needs: sisters' villa · visa letters (overseas) · kids plan (households with children).</div>
       </div>
