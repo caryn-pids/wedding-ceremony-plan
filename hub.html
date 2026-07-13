@@ -72,6 +72,7 @@
   .pill.warn{background:#f6ecd6;color:#9a7526}
   .pill.pend{background:#f1e4e4;color:#9a6a6a}
   .pill.todo{background:#eee7da;color:#897a60}
+  .pill.na{background:#e9e6e0;color:#7a746a}
   table{width:100%;border-collapse:collapse;font-size:.9rem}
   th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
   th{font-family:'Josefin Sans';font-weight:500;color:var(--muted);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase}
@@ -115,6 +116,12 @@
   .linkbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
   /* clickable list rows */
   .lk{cursor:pointer;transition:.12s}
+  .card.tight.lk:hover{box-shadow:0 8px 20px rgba(165,97,47,.16);transform:translateY(-2px)}
+  .card.tight.lk .caret{font-size:.7rem;color:var(--terra);margin-left:5px}
+  .card.tight.lk.open .caret{transform:rotate(180deg);display:inline-block}
+  .bdrop{display:none}
+  .bdrop.open{display:block;animation:bd .18s ease}
+  @keyframes bd{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
   ul.clean li.lk:hover{background:#fbf3ea;border-radius:8px;padding-left:8px;padding-right:8px}
   ul.clean li.lk .go{color:var(--terra);opacity:0;transition:.12s}
   ul.clean li.lk:hover .go{opacity:1}
@@ -124,8 +131,24 @@
   @media(max-width:700px){.gallery.cols4{grid-template-columns:repeat(2,1fr)}}
   .gallery a{display:block;overflow:hidden;border-radius:10px;border:1px solid var(--line);box-shadow:var(--shadow)}
   .gallery img{width:100%;height:135px;object-fit:cover;display:block;transition:.25s}
+  .gallery.full{grid-template-columns:repeat(2,1fr)}
+  .gallery.full a{overflow:visible;background:#fff;display:flex;justify-content:center;align-items:center;padding:6px}
+  .gallery.full img{width:auto;max-width:100%;height:auto;max-height:280px;object-fit:contain;background:#fff}
+  @media(max-width:700px){.gallery.full{grid-template-columns:1fr}}
   .gallery a:hover img{transform:scale(1.06)}
   .feature{display:block;width:100%;max-height:600px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-top:12px}
+  /* horizontal month timeline */
+  .htl{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 16px;scroll-snap-type:x proximity}
+  .htl-col{flex:0 0 208px;min-width:208px;scroll-snap-align:start;display:flex;flex-direction:column}
+  .htl-h{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--bronze-d);text-align:center;padding:6px 0;border-bottom:2px solid var(--gold);margin-bottom:10px;letter-spacing:.02em}
+  .htl-body{display:flex;flex-direction:column;gap:9px}
+  .htl-ev{background:#fff;border:1px solid var(--line);border-left:4px solid var(--bronze);border-radius:10px;padding:8px 10px;box-shadow:var(--shadow)}
+  .htl-ev.done{opacity:.62;border-left-color:var(--sage)}
+  .htl-ev.now{border-left-color:var(--terra)}
+  .htl-ev.planned{border-left-color:var(--gold)}
+  .htl-ev-top{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px}
+  .htl-ev-m{font-size:.82rem;line-height:1.35}
+  .htl-ev-d{font-size:.68rem;font-weight:700;color:var(--terra-d);margin-top:5px;text-transform:uppercase;letter-spacing:.04em}
   .drop{border:2px dashed var(--terra);background:#fbf2e9;border-radius:12px;padding:18px 16px;text-align:center;color:var(--terra-d);font-size:.9rem;margin-top:12px}
   .drop b{color:var(--bronze-d)}
   .gwrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:12px}
@@ -180,6 +203,7 @@ const TABS = [
   ["dashboard","Dashboard","◆"],
   ["timeline","Planning Timeline","❧"],
   ["dayof","Day-of Schedule","☼"],
+  ["program","Wedding Day Programme","❦"],
   ["checklist","Checklist & Tasks","✓"],
   ["budget","Budget","€"],
   ["venue","Venue","⌂"],
@@ -187,8 +211,10 @@ const TABS = [
   ["dj","DJ & Music","♪"],
   ["photo","Photographer","◉"],
   ["bridal","Bridal Gown","❀"],
+  ["cake","Wedding Cake","❖"],
   ["seating","Seating Plans","▦"],
   ["guests","Guests","♥"],
+  ["guestexp","Guest Experience","❥"],
   ["coordinator","Day-of Coordinator","✶"],
 ];
 
@@ -198,22 +224,24 @@ const CHECKLIST = {
     ["Venue confirmed — Marriott Praia D'El Rey (24 Jul 2027)",true],
     ["Photographer — Lia Rodrigues — BOOKED, deposit paid",true],
     ["DJ — Bruno (FixTheMusic) — BOOKED, deposit paid",true],
-    ["Same-day coordinator — Cátia (Ode Stories) — confirmed",true],
-    ["Floral & design — Helart: confirm final quote & pay 50% deposit",false],
-    ["Bridal gown — €1,500 agreed with Sónia (Academia) ✓; book Visit 1 + pay deposit",false],
+    ["Same-day coordinator — Cátia (Ode Stories) — contract signed · 50% deposit €280 paid (13 Jul 2026)",true],
+    ["Floral & design — Helart — BOOKED · 50% deposit €2,488.25 paid (7 Jul 2026)",true],
+    ["Helart mock-up meeting — schedule for end of Oct 2026 (seasonal flowers)",false],
+    ["Bridal gown — Academia (Sónia) · Visit 1 done · 50% deposit €750 paid (Jul 2026) ✓",true],
     ["DJ balance €1,040 — due by 9 Jun 2027",false],
-    ["Photographer 50% (€937.50) — due ~17 Jul 2027",false],
+    ["Photographer — 50% €937.50 due ~1 wk before · 20% €377.50 on gallery delivery",false],
     ["Photographer — sign contract + fill questionnaire + book engagement session",false],
     ["Officiant / celebrant (close friend) — confirm & brief on ring-exchange ceremony",false],
     ["Hair & makeup artist — book trial + day-of",false],
-    ["Cake — baker confirmed",false],
-    ["Crossback chairs — confirm rental via Helart (qty for ~70)",false],
-    ["Gold cutlery — confirm with Helart",false],
+    ["Cake — Teresa Henriques BOOKED · €550 (delivery incl.) · deposit €165 paid (29 Jun 2026)",true],
+    ["Cake — flavour chosen: NYC (confirmed 13 Jul 2026) ✓",true],
+    ["Crossback chairs — wooden, via Helart (~60 in final quote) ✓",true],
+    ["Gold cutlery — confirmed via Helart · €390 (€6.50/set ×60) ✓",true],
   ],
   "Design & Decor":[
     ["Lock palette: nude / cream / ivory / soft sand / warm brown / bronze",true],
     ["Altar — Option A gold metal circle (Helart) confirmed",false],
-    ["Centerpieces — finalize cylinder count / fewer candles",false],
+    ["Centerpieces — glass cylinders + ivory pillars, pared back ✓",true],
     ["Cream draped tablecloths confirmed",false],
     ["Napkins — supply ourselves (sourced?)",false],
     ["Ceiling — decided: nothing for now",true],
@@ -221,7 +249,7 @@ const CHECKLIST = {
     ["Reception U-layout floor plan finalized",false],
   ],
   "Stationery & Signage":[
-    ["Welcome / entrance sign — design (Rafaela / Alma Design)",false],
+    ["Welcome / entrance sign — design (Rafaela · Alma Atelier · +351 939 257 091)",false],
     ["Seating plan sign — design",false],
     ["Toilet signage",false],
     ["Cake signage",false],
@@ -237,13 +265,34 @@ const CHECKLIST = {
     ["Sisters' villa accommodation booked",false],
     ["Guest transport / shuttle plan",false],
   ],
-  "Logistics & Final Month":[
-    ["Final headcount to venue & Helart",false],
-    ["Final payments scheduled (week before)",false],
+  "Logistics & Final Month — all done before 1 Jul handover":[
+    ["Lock final headcount by ~25–26 Jun → venue, Helart, cake",false],
+    ["Pre-pay ALL vendor balances before 1 Jul (don't wait for the week-before)",false],
     ["Vendor contact sheet compiled",false],
-    ["Hand everything to same-day coordinator (~24 Jun 2027)",false],
     ["Day-of timeline shared with all vendors",false],
     ["Emergency / rain plan confirmed",false],
+    ["HAND EVERYTHING to same-day coordinator — 1 Jul 2027",false],
+  ],
+  "Programme, Lucas & guest experience":[
+    ["Assign a toastmaster",false],
+    ["Finalize the programme with Lars",false],
+    ["Confirm who handles Lucas + how many kids are coming",false],
+    ["Signage: lobby → ceremony area for guests",false],
+    ["Decide: wedding sign / guest book — is it needed?",false],
+    ["Guest photos — will they upload to the wedding website?",false],
+    ["Seating plan — share it with guests on the website?",false],
+    ["Accessories needed for ceremony & reception",false],
+    ["Lars's suit",false],
+    ["Lucas's suit",false],
+    ["Plan how to handle Lucas on the wedding day",false],
+    ["Handling Caryn's family & friends (roles / hosting)",false],
+    ["Handling Lars's family & friends (roles / hosting)",false],
+    ["Wedding dance",false],
+    ["Guest visit to our home",false],
+    ["Receiving of gifts",false],
+    ["Lucas's clothes",false],
+    ["Celebrant gift",false],
+    ["Wedding ring",false],
   ],
 };
 
@@ -280,7 +329,7 @@ const GUESTLIST = {
   ],
   "Lars · Friends":[
     ["Carlsson",1,1],["Bloch",1,1],["Thomas Hørlykke + Kath",1,2],["Max + Mathilde",1,2],["Hertz + 3",1,4],
-    ["Thomas Friis + Michelle",1,2],["William W.",1,1],["Edwin + Naomi + child",1,3],["Anders Hussing + Olya",1,2],
+    ["Thomas Friis + Michelle",1,2],["William W.",1,1],["Edwin + Naomi",1,2],["Anders Hussing + Olya",1,2],
     ["Kasper Lindberg",1,1],["Nima + wife",1,2],["Anders + Denise",1,2],["Jan Christensen + wife",1,2]
   ],
   "Caryn · Family":[
@@ -299,14 +348,116 @@ const GUESTLIST = {
 const TIMELINE = [
   ["Done","Venue secured — Marriott Praia D'El Rey, Óbidos"],
   ["Done","Concept & palette locked (pampas → legal alternatives, nude/cream/bronze)"],
-  ["In progress · Jun 2026","Floral & design — Helart proposal finalizing; confirm & deposit"],
-  ["Jul–Sep 2026","Book photographer, DJ, hair & makeup, cake"],
+  ["Done · Jul 2026","Floral & design — Helart BOOKED · 50% deposit €2,488.25 paid (7 Jul)"],
+  ["Jul–Sep 2026","Book hair & makeup · cake flavour chosen — NYC ✓ · coordinator signed + deposit paid ✓"],
+  ["End Oct 2026","Helart mock-up meeting (seasonal flowers) · away from PT first 2 wks Nov"],
   ["Q4 2026","Stationery & signage design (Rafaela / Alma Design) · invitations"],
   ["Q1 2027","Guest list final · RSVPs · visa letters (Dubai) · villa booking"],
   ["Apr–May 2027","Tastings, final design walkthrough, mockups"],
-  ["~24 Jun 2027","FULL HANDOVER to same-day coordinator (1 month out)"],
-  ["Week of 21 Jul 2027","Final payments · final headcount · vendor contact sheet"],
-  ["24 Jul 2027","Wedding day ☼"],
+  ["Jun 2027","Final fittings · lock every design · confirm run-of-show with vendors"],
+  ["By 30 Jun 2027","🎯 EVERYTHING DONE — all balances pre-paid · final headcount locked · vendor contact sheet ready"],
+  ["1 Jul 2027","FULL HANDOVER to same-day coordinator (Cátia) — nothing left on your plate"],
+  ["23–24 Jul 2027","Rehearsal + Wedding day ☼ — coordinator runs the show"],
+];
+
+/* per-vendor master schedule — expert-suggested "perfect timing"
+   row = [milestone, ideal-timing rule, target date (human), status, sortKey YYYY-MM(-DD)]
+   status: done | now (action around now) | planned */
+const VSCHED = [
+  {v:"Floral & Design", key:"floral", who:"Helart · Liliana", rows:[
+    ["Initial enquiry & concept","At booking","Done ✓","done","2026-05"],
+    ["Finalize final quote & selections","~12 months out","Jun 2026","done","2026-06"],
+    ["Pay 50% deposit (€2,488.25) — date reserved","On quote sign-off","7 Jul 2026","done","2026-07"],
+    ["Mock-up meeting (seasonal flowers)","~9 months out","end Oct 2026","planned","2026-10"],
+    ["Confirm final counts (chairs, centerpieces, signage)","~8 weeks out","late May 2027","planned","2027-05"],
+    ["Confirm counts + pre-pay balance","before handover","by 30 Jun 2027","planned","2027-06-30"],
+    ["Setup — ceremony lawn + terrace","day-of (coordinator)","24 Jul 2027","planned","2027-07-24"],
+  ]},
+  {v:"Bridal Gown", key:"bridal", who:"Academia · Sónia", rows:[
+    ["Price agreed & officially booked","Done","Jun 2026","done","2026-06"],
+    ["Visit 1 done — contract + measurements + 1st fitting","Done","Jul 2026","done","2026-07-15"],
+    ["50% deposit €750 paid","Done","Jul 2026","done","2026-07-16"],
+    ["Source accessories (veil, shoes, undergarments)","~5 months out","Feb 2027","planned","2027-02"],
+    ["Visit 2 — second fitting","~4 months out","Mar 2027","planned","2027-03"],
+    ["Visit 3 — final fitting + dress delivery","~6 weeks out","early Jun 2027","planned","2027-06"],
+    ["Steam / press + pick up dress","before handover","by 27 Jun 2027","planned","2027-06-27"],
+  ]},
+  {v:"Photographer", key:"photo", who:"Lia Rodrigues", rows:[
+    ["Booked · deposit paid","Done","May 2026","done","2026-05"],
+    ["Sign contract + fill questionnaire","ASAP","Aug 2026","now","2026-08"],
+    ["Engagement session (nice light, images for STDs)","~9 months out","Oct 2026","planned","2026-10"],
+    ["Family-group shot list to Lia","~6 weeks out","mid-Jun 2027","planned","2027-06-15"],
+    ["Timeline / intro call","~1 month out","late Jun 2027","planned","2027-06"],
+    ["Pre-wedding 50% payment (pay early)","before handover","by 30 Jun 2027","planned","2027-06-30"],
+    ["Final 20% on gallery delivery","after wedding (unavoidable)","Aug 2027","planned","2027-08"],
+  ]},
+  {v:"DJ & Music", key:"dj", who:"Bruno · FixTheMusic", rows:[
+    ["Booked · deposit paid","Done","May 2026","done","2026-05"],
+    ["Send music brief + cultural tracks","~6 months out","Jan 2027","planned","2027-01"],
+    ["Balance (65%) due","Per contract","9 Jun 2027","planned","2027-06-09"],
+    ["Lock ceremony / first-dance songs","~6 weeks out","mid-Jun 2027","planned","2027-06-15"],
+    ["Run-of-show call","~4 weeks out","late Jun 2027","planned","2027-06"],
+    ["Send WAV files on USB","before handover","by 27 Jun 2027","planned","2027-06-27"],
+  ]},
+  {v:"Day-of Coordinator", key:"coordinator", who:"Cátia · Ode Stories", rows:[
+    ["Confirmed","Done","Jun 2026","done","2026-06"],
+    ["Contract signed + 50% deposit €280 paid","Done","13 Jul 2026","done","2026-07-13"],
+    ["Intro call with Cátia","~soon","Aug 2026","now","2026-08"],
+    ["Prepare handover pack","~6 weeks out","mid-Jun 2027","planned","2027-06-15"],
+    ["FULL HANDOVER — owns run-of-show","handover day","1 Jul 2027","planned","2027-07-01"],
+    ["Final 50% payment (pay early)","before handover","by 30 Jun 2027","planned","2027-06-30"],
+  ]},
+  {v:"Venue", key:"venue", who:"Marriott Praia D'El Rey", rows:[
+    ["Date secured · contract","Done","2026","done","2026-01"],
+    ["Menu & wine tasting","~4 months out","Mar 2027","planned","2027-03"],
+    ["Final floor-plan sign-off","~2 months out","late May 2027","planned","2027-05"],
+    ["Confirm rain / wind backup plan","~2 months out","May 2027","planned","2027-05"],
+    ["Vendor load-in times confirmed","~1 month out","late Jun 2027","planned","2027-06"],
+    ["Final guaranteed headcount to Marriott","before handover","by 26 Jun 2027","planned","2027-06-26"],
+    ["Final balance payment (pay early)","before handover","by 30 Jun 2027","planned","2027-06-30"],
+  ]},
+  {v:"Hair & Makeup", key:null, who:"To book", rows:[
+    ["Research & shortlist artists","Now","Aug 2026","now","2026-08"],
+    ["Book artist (secure the date — they book early)","~9 months out","Oct 2026","planned","2026-10"],
+    ["Trial run (pair with engagement shoot if possible)","~2–3 months out","Apr–May 2027","planned","2027-04"],
+    ["Confirm final look & morning schedule","~1 month out","Jun 2027","planned","2027-06"],
+    ["Balance payment (pay early)","before handover","by 30 Jun 2027","planned","2027-06-30"],
+  ]},
+  {v:"Cake", key:"cake", who:"Teresa Henriques", rows:[
+    ["Booked + deposit €165 paid — date secured","Done","Jun 2026","done","2026-06"],
+    ["Flavour chosen — NYC","Done","13 Jul 2026","done","2026-07-13"],
+    ["Pay balance €385 (pay early)","before handover","by 30 Jun 2027","planned","2027-06-30"],
+    ["Tasting","~3 months out","Apr 2027","planned","2027-04"],
+    ["Lock final design & flavours","~6 weeks out","mid-Jun 2027","planned","2027-06-15"],
+    ["Confirm final headcount to Teresa","before handover","by 26 Jun 2027","planned","2027-06-26"],
+  ]},
+  {v:"Stationery & Signage", key:null, who:"Rafaela · Alma Design", rows:[
+    ["Contact & brief designer","Now","Aug 2026","now","2026-08"],
+    ["Save-the-dates sent (destination — go early)","~10 months out","Sep 2026","now","2026-09"],
+    ["Invitation design","~8 months out","Nov 2026","planned","2026-11"],
+    ["Invitations sent","~4 months out","Mar 2027","planned","2027-03"],
+    ["RSVP deadline","~10 weeks out","15 May 2027","planned","2027-05-15"],
+    ["On-the-day signage + menus design","~2 months out","May 2027","planned","2027-05"],
+    ["Print signage / menus / place cards","before handover","by 27 Jun 2027","planned","2027-06-27"],
+  ]},
+  {v:"Officiant / Ceremony", key:null, who:"Close-friend celebrant", rows:[
+    ["Confirm & brief officiant","~6 months out","Jan 2027","planned","2027-01"],
+    ["Draft ceremony script + ring exchange","~2 months out","May 2027","planned","2027-05"],
+    ["Rehearsal","wedding weekend (coordinator)","23 Jul 2027","planned","2027-07-23"],
+  ]},
+  {v:"Attire & Rings", key:null, who:"Groom's suit · wedding rings", rows:[
+    ["Order wedding rings (allow engraving buffer)","~4 months out","Mar 2027","planned","2027-03"],
+    ["Order / tailor groom's suit","~4 months out","Mar 2027","planned","2027-03"],
+    ["Suit final fitting","before handover","by 27 Jun 2027","planned","2027-06-27"],
+  ]},
+  {v:"Guests & Travel", key:"guests", who:"RSVP · villa · visas", rows:[
+    ["Lock final guest list","~9 months out","Nov 2026","planned","2026-11"],
+    ["Visa support letters (Dubai guests — start early)","~6 months out","Jan 2027","planned","2027-01"],
+    ["Sisters' villa booked","~6 months out","Jan 2027","planned","2027-01"],
+    ["Collect dietary requirements","With RSVPs","May 2027","planned","2027-05"],
+    ["Guest transport / shuttle plan","~2 months out","May 2027","planned","2027-05"],
+    ["Final headcount locked","before handover","by 25 Jun 2027","planned","2027-06-25"],
+  ]},
 ];
 </script>
 
@@ -319,7 +470,21 @@ const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 function tickCountdown(){
   const d = new Date(WEDDING_DATE) - new Date();
   const days = Math.max(0, Math.ceil(d/86400000));
-  $("#cdDays").textContent = days;
+  const cd = $("#cdDays"); if(cd) cd.textContent = days;      // header badge (always present)
+  const dd = $("#dashDays"); if(dd) dd.textContent = days;    // dashboard tile (only on dashboard tab)
+}
+// recompute whenever the tab regains focus / is reopened, so it never shows a stale day count
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) tickCountdown(); });
+window.addEventListener("focus", tickCountdown);
+
+/* ---- budget stat-card breakdowns ---- */
+function bTog(key){
+  const panel=document.getElementById("bd-"+key), card=document.getElementById("bc-"+key);
+  if(!panel) return;
+  const isOpen=panel.classList.contains("open");
+  document.querySelectorAll(".bdrop").forEach(d=>d.classList.remove("open"));
+  document.querySelectorAll(".card.tight.lk").forEach(c=>c.classList.remove("open"));
+  if(!isOpen){ panel.classList.add("open"); if(card) card.classList.add("open"); }
 }
 
 /* ---- checklist persistence ---- */
@@ -370,22 +535,23 @@ function tab_dashboard(){
           <li class="lk" onclick="render('photo')">Photographer — Lia Rodrigues <span><span class="pill ok">Booked</span> <span class="go">›</span></span></li>
           <li class="lk" onclick="render('dj')">DJ — Bruno (FixTheMusic) <span><span class="pill ok">Booked</span> <span class="go">›</span></span></li>
           <li class="lk" onclick="render('coordinator')">Coordinator — Cátia (Ode Stories) <span><span class="pill ok">Confirmed</span> <span class="go">›</span></span></li>
-          <li class="lk" onclick="render('floral')">Floral & Design — Helart <span><span class="pill warn">Finalizing</span> <span class="go">›</span></span></li>
+          <li class="lk" onclick="render('floral')">Floral & Design — Helart <span><span class="pill ok">Booked</span> <span class="go">›</span></span></li>
           <li class="lk" onclick="render('bridal')">Bridal gown — Academia das Noivas <span><span class="pill ok">Confirmed</span> <span class="go">›</span></span></li>
           <li>Hair & Makeup <span class="pill todo">To book</span></li>
-          <li>Cake <span class="pill todo">To book</span></li>
+          <li class="lk" onclick="render('cake')">Cake — Teresa Henriques <span><span class="pill ok">Booked</span> <span class="go">›</span></span></li>
         </ul>
       </div>
       <div class="card"><h3>€ Budget snapshot <span class="tag">(tap to open)</span></h3>
         <ul class="clean">
-          <li class="lk" onclick="render('floral')">Floral & Design (Helart, base) <b>€4,541.50</b></li>
+          <li class="lk" onclick="render('floral')">Floral & Design (Helart, final) <b>€4,976.50</b></li>
           <li class="lk" onclick="render('photo')">Photographer (Lia) <b>€1,875.00</b></li>
           <li class="lk" onclick="render('dj')">DJ (Bruno) <b>€1,600.00</b></li>
-          <li class="lk" onclick="render('bridal')">Bridal gown (Academia) <b>€1,500</b> <span class="muted">agreed</span></li>
-          <li class="lk" onclick="render('coordinator')">Coordinator (Cátia) <span class="muted">+ €57 travel</span></li>
+          <li class="lk" onclick="render('bridal')">Bridal gown (Academia) <b>€1,500</b> <span class="muted">€750 paid</span></li>
+          <li class="lk" onclick="render('coordinator')">Coordinator (Cátia) <b>€617.00</b> <span class="muted">incl. travel</span></li>
+          <li class="lk" onclick="render('cake')">Cake (Teresa Henriques) <b>€550.00</b></li>
           <li class="lk" onclick="render('budget')">Full budget vs plan <span class="go">›</span></li>
         </ul>
-        <div class="note">Deposits paid: DJ €560 · Photographer €560. Next: Helart 50% (<b>€2,270.75</b>).</div>
+        <div class="note">Deposits paid: Venue €1,500 · Helart <b>€2,488.25</b> · DJ €560 · Photographer €560 · Cake €165 · Coordinator €280 · Gown €750 = <b>€6,303.25</b>.</div>
       </div>
     </div>
     <div class="card sec"><h3>↗ Quick links</h3>
@@ -398,8 +564,55 @@ function tab_dashboard(){
 }
 
 function tab_timeline(){
-  return pagehead("Roadmap","Planning Timeline","From booking to the big day — and the all-important handover to your coordinator one month out.")
-  + `<div class="card"><div class="tl">`
+  const pillFor = s => s==="done" ? '<span class="pill ok">Done</span>'
+    : s==="now" ? '<span class="pill warn">Action now</span>'
+    : '<span class="pill todo">Planned</span>';
+
+  /* --- per-vendor tabulated schedule (one timeline per vendor) --- */
+  const byVendor = VSCHED.map(g=>{
+    const head = g.key
+      ? `<h3 class="lk" onclick="render('${g.key}')" style="cursor:pointer">${esc(g.v)} <span class="tag">${esc(g.who)}</span> <span class="go" style="color:var(--terra);opacity:1">›</span></h3>`
+      : `<h3>${esc(g.v)} <span class="tag">${esc(g.who)}</span></h3>`;
+    const rows = g.rows.map(([m,when,date,st])=>
+      `<tr><td>${esc(m)}</td><td class="muted">${esc(when)}</td><td><b>${esc(date)}</b></td><td>${pillFor(st)}</td></tr>`).join("");
+    return `<div class="card sec">${head}
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Milestone</th><th>Ideal timing</th><th style="width:130px">Target</th><th style="width:110px">Status</th></tr></thead>
+        <tbody>${rows}</tbody></table></div></div>`;
+  }).join("");
+
+  /* --- chronological single-sheet, laid out horizontally by month --- */
+  const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const monLabel = ym => { const p=ym.split("-"); return MON[(+p[1])-1]+" "+p[0]; };
+  const flat = [];
+  VSCHED.forEach(g=>g.rows.forEach(([m,when,date,st,k])=>flat.push({v:g.v,m,when,date,st,k})));
+  flat.sort((a,b)=> a.k<b.k?-1 : a.k>b.k?1 : 0);
+  const monthOrder=[], byMonth={};
+  flat.forEach(r=>{ const ym=r.k.slice(0,7); if(!byMonth[ym]){byMonth[ym]=[];monthOrder.push(ym);} byMonth[ym].push(r); });
+  const htlCols = monthOrder.map(ym=>{
+    const evs = byMonth[ym].map(r=>
+      `<div class="htl-ev ${r.st}">
+         <div class="htl-ev-top"><span class="tag">${esc(r.v)}</span>${pillFor(r.st)}</div>
+         <div class="htl-ev-m">${esc(r.m)}</div>
+         <div class="htl-ev-d">${esc(r.date)}</div>
+       </div>`).join("");
+    return `<div class="htl-col"><div class="htl-h">${monLabel(ym)}</div><div class="htl-body">${evs}</div></div>`;
+  }).join("");
+
+  return pagehead("Roadmap","Planning Timeline","Every vendor milestone — meetings, fittings, tastings, payments — front-loaded so it's all handled BEFORE the 1 Jul 2027 handover to the coordinator. Nothing waits for the wedding day.")
+  + `<div class="note" style="border-left:4px solid var(--terra)">🎯 <b>Target: everything done before 1 Jul 2027.</b> That's when you hand the whole show to Cátia. Balances are <b>pre-paid early</b> and the final headcount is <b>locked by ~26 Jun</b> — don't wait for the usual "week before". Only day-of execution (setup, rehearsal) and the post-wedding gallery payment fall after.</div>
+     <div class="note">🗓 <span class="pill ok">Done</span> complete · <span class="pill warn">Action now</span> due around now (Jul 2026) · <span class="pill todo">Planned</span> upcoming. Vendor names in <b>brown</b> open that vendor's tab.</div>
+
+     <div class="sec"><h2>By vendor — timeline on each</h2></div>`
+  + byVendor
+  + `<div class="sec"><h2>Everything in date order <span class="tag">single-sheet · slide left → right</span></h2></div>
+     <div class="card">
+       <div class="note" style="margin-top:0">🗓 Months run left → right across the whole plan. <b>Scroll / drag sideways</b> (or use the slider under the strip) to move through time. Colour bar = status: <span style="color:var(--sage-d)">green</span> done · <span style="color:var(--terra-d)">red</span> now · <span style="color:var(--gold)">gold</span> planned.</div>
+       <div class="htl">${htlCols}</div>
+     </div>
+
+     <div class="sec"><h2>Big-picture phases</h2></div>
+     <div class="card"><div class="tl">`
   + TIMELINE.map(([d,t])=>`<div class="ev"><div class="d">${esc(d)}</div><div class="t">${esc(t)}</div></div>`).join("")
   + `</div></div>`;
 }
@@ -454,9 +667,53 @@ function refreshProgress(){
 function tab_budget(){
   return pagehead("Money","Budget","Tracked against our agreed plan — the RECOMMENDED option (€30,240) from the Marriott scenario simulator.")
   + `<div class="grid g3">
-      <div class="card tight"><div class="stat">€30,240</div><div class="stat-lbl">Planned (Recommended)</div></div>
-      <div class="card tight"><div class="stat">€11,074</div><div class="stat-lbl">Committed · 5 booked lines</div></div>
-      <div class="card tight"><div class="stat">€1,120</div><div class="stat-lbl">Deposits paid to date</div></div>
+      <div class="card tight lk" id="bc-plan" onclick="bTog('plan')"><div class="stat">€30,240</div><div class="stat-lbl">Planned (Recommended) <span class="caret">▾</span></div></div>
+      <div class="card tight lk" id="bc-comm" onclick="bTog('comm')"><div class="stat">€11,118.50</div><div class="stat-lbl">Committed · 6 booked lines <span class="caret">▾</span></div></div>
+      <div class="card tight lk" id="bc-dep" onclick="bTog('dep')"><div class="stat">€6,303.25</div><div class="stat-lbl">Deposits paid to date <span class="caret">▾</span></div></div>
+    </div>
+    <div class="note" style="margin-top:-4px">Tap any figure above to see exactly which items add up to it.</div>
+    <div id="bd-dep" class="card sec bdrop"><h3>💶 Deposits paid to date — €6,303.25</h3>
+      <table><thead><tr><th>Vendor</th><th>When</th><th class="num">Deposit</th></tr></thead><tbody>
+      <tr><td>Helart — floral &amp; design (50%)</td><td>7 Jul 2026</td><td class="num">€2,488.25</td></tr>
+      <tr><td>Marriott — venue (1st, non-refundable)</td><td>22 Mar 2026</td><td class="num">€1,500.00</td></tr>
+      <tr><td>Lia Rodrigues — photographer (30%)</td><td>9 Jun 2026</td><td class="num">€560.00</td></tr>
+      <tr><td>Bruno (FixTheMusic) — DJ</td><td>paid</td><td class="num">€560.00</td></tr>
+      <tr><td>Teresa Henriques — cake (30%)</td><td>29 Jun 2026</td><td class="num">€165.00</td></tr>
+      <tr><td>Cátia · Ode Stories — coordinator (50%)</td><td>13 Jul 2026</td><td class="num">€280.00</td></tr>
+      <tr><td>Academia das Noivas — bridal gown (50%)</td><td>Jul 2026</td><td class="num">€750.00</td></tr>
+      <tr class="total"><td>Total paid</td><td></td><td class="num">€6,303.25</td></tr>
+      </tbody></table></div>
+    <div id="bd-comm" class="card sec bdrop"><h3>📌 Committed — €11,118.50 vendors + venue booked</h3>
+      <table><thead><tr><th>Category</th><th>Vendor</th><th class="num">Committed</th><th class="num">Paid</th></tr></thead><tbody>
+      <tr><td>Floral &amp; design</td><td>Helart</td><td class="num">€4,976.50</td><td class="num">€2,488.25</td></tr>
+      <tr><td>Photographer</td><td>Lia Rodrigues</td><td class="num">€1,875.00</td><td class="num">€560.00</td></tr>
+      <tr><td>DJ / music</td><td>Bruno (FixTheMusic)</td><td class="num">€1,600.00</td><td class="num">€560.00</td></tr>
+      <tr><td>Coordinator</td><td>Cátia · Ode Stories (fee €560 + travel €57)</td><td class="num">€617.00</td><td class="num">€280.00</td></tr>
+      <tr><td>Bridal gown</td><td>Academia das Noivas</td><td class="num">€1,500.00</td><td class="num">€750.00</td></tr>
+      <tr><td>Cake</td><td>Teresa Henriques</td><td class="num">€550.00</td><td class="num">€165.00</td></tr>
+      <tr><td>Venue</td><td>Marriott Praia D'El Rey <span class="pill ok">Booked</span></td><td class="num muted">TBD*</td><td class="num">€1,500.00</td></tr>
+      <tr class="total"><td>Subtotal</td><td></td><td class="num">€11,118.50 + venue</td><td class="num">€6,303.25</td></tr>
+      </tbody></table>
+      <div class="note">*Venue is <b>booked &amp; contract signed</b> (€1,500 non-refundable deposit paid 22 Mar 2026), but the full F&amp;B total depends on final menu &amp; headcount, confirmed with Marriott from Jan 2027. Recommended-plan estimate for the venue was ≈€22,840. Still-to-book: hair &amp; makeup, stationery.</div></div>
+    <div id="bd-plan" class="card sec bdrop"><h3>🗂 Planned (Recommended) — €30,240</h3>
+      <table><thead><tr><th>Block</th><th class="num">€</th></tr></thead><tbody>
+      <tr><td>Marriott venue (F&amp;B, DJ, coordinator, cake, night service)</td><td class="num">€22,840</td></tr>
+      <tr><td>Shared costs (photo, dress, flowers, rings, kids, extras, buffer)</td><td class="num">€7,400</td></tr>
+      <tr class="total"><td>Grand total — Recommended</td><td class="num">€30,240</td></tr>
+      </tbody></table>
+      <div class="note">Full line-by-line breakdown is in the "🗂 Original plan — RECOMMENDED option" card at the bottom of this tab. Scenarios: Lean €25,674 · <b>Recommended €30,240 (agreed)</b> · Comfortable €37,554.</div></div>
+    <div class="card sec"><h3>💳 Payment schedule — all vendors <span class="tag">private · not on the vendor tabs</span></h3>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Vendor</th><th class="num">Total</th><th>Deposit (paid)</th><th>Balance — when</th><th>How to pay</th></tr></thead><tbody>
+        <tr><td><b>Venue</b> — Marriott</td><td class="num">TBD*</td><td>€1,500 · 22 Mar 2026</td><td>Instalments + balance — <b>pre-pay by 30 Jun 2027</b></td><td>Bank transfer</td></tr>
+        <tr><td><b>Floral</b> — Helart</td><td class="num">€4,976.50</td><td>€2,488.25 (50%) · 7 Jul 2026</td><td>€2,488.25 (50%) — <b>pre-pay by 30 Jun 2027</b></td><td>Bank transfer (per invoice)</td></tr>
+        <tr><td><b>Photographer</b> — Lia</td><td class="num">€1,875.00</td><td>€560 (30%) · 9 Jun 2026</td><td>€937.50 (50%) <b>pre-pay by 30 Jun</b> · €377.50 (20%) on gallery (Aug)</td><td>CGD · IBAN PT50 0035 0466 00006543700 74 / MBWay 962 570 438</td></tr>
+        <tr><td><b>DJ</b> — Bruno</td><td class="num">€1,600.00</td><td>€560 (35%) · paid</td><td>€1,040 (65%) — due <b>9 Jun 2027</b></td><td>FixTheMusic platform</td></tr>
+        <tr><td><b>Cake</b> — Teresa</td><td class="num">€550.00</td><td>€165 (30%) · 29 Jun 2026</td><td>€385 — <b>pre-pay by 30 Jun 2027</b></td><td>IBAN PT50 0045 5192 4019 3393 6388 7 / Revolut 919 309 667</td></tr>
+        <tr><td><b>Coordinator</b> — Cátia</td><td class="num">€617.00</td><td>€280 (50%) · 13 Jul 2026</td><td>€337 (50% + travel) — <b>pre-pay by 30 Jun 2027</b></td><td>IBAN PT50 0035 0557 00699668500 20 / MBWay 969 880 395</td></tr>
+        <tr><td><b>Bridal gown</b> — Academia</td><td class="num">€1,500.00</td><td>€750 (50%) · Jul 2026</td><td>€750 (50%) — <b>pre-pay by 30 Jun 2027</b></td><td>Transfer / MB Way (TBC)</td></tr>
+      </tbody></table></div>
+      <div class="note">*Venue F&amp;B total is finalized at the Jan 2027 tasting. Everything is <b>pre-paid before the 1 Jul 2027 handover</b> except the DJ (due 9 Jun) and Lia's final 20% (after the wedding, on gallery delivery). <b>This schedule lives only here on the Budget tab — the vendor tabs are payment-free so they can be shared with each vendor.</b></div>
     </div>
     <div class="card sec"><h3>Floral & Design — Helart (final selections)</h3>
      <table><thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Unit</th><th class="num">Total</th></tr></thead><tbody>
@@ -466,37 +723,38 @@ function tab_budget(){
      <tr><td>Cream draped tablecloth</td><td class="num">1</td><td class="num">€160.00</td><td class="num">€160.00</td></tr>
      <tr><td>Wooden crossback chairs</td><td class="num">60</td><td class="num">€7.90</td><td class="num">€474.00</td></tr>
      <tr><td>Centerpiece — Option B (fewer candles)</td><td class="num">8</td><td class="num">~€175</td><td class="num">~€1,400.00</td></tr>
-     <tr><td>Gold cutlery (reallocated)</td><td class="num">—</td><td class="num">—</td><td class="num">~€200.00</td></tr>
+     <tr><td>Gold cutlery</td><td class="num">60</td><td class="num">€6.50</td><td class="num">€390.00</td></tr>
      <tr><td>Table-end + cake decor</td><td class="num">—</td><td class="num">reuse</td><td class="num">€0.00</td></tr>
      <tr><td>Bridal bouquet</td><td class="num">1</td><td class="num">€160.00</td><td class="num">€160.00</td></tr>
      <tr><td>Groom's boutonnière</td><td class="num">1</td><td class="num">€12.50</td><td class="num">€12.50</td></tr>
      <tr><td>Transport / set-up / dismantling</td><td class="num">—</td><td class="num">—</td><td class="num">€870.00</td></tr>
-     <tr class="total"><td>Helart base total (VAT incl.)</td><td></td><td></td><td class="num">€4,541.50</td></tr>
+     <tr class="total"><td>Helart FINAL quote total (VAT incl.)</td><td></td><td></td><td class="num">€4,976.50</td></tr>
      </tbody></table>
-     <div class="note">Removed vs 2nd quote: beige napkins (self-supply) & ceiling drape. Signage styling to be added once Helart quotes it. 50% deposit: <b>€2,270.75</b>.</div>
+     <div class="note"><b>Confirmed final quote €4,976.50</b> (23 Jun 2026); line items above are approximate — the €4,976.50 total is the binding figure. Removed vs earlier quote: beige napkins (self-supply) & ceiling drape. <b>50% deposit €2,488.25 PAID by Lars 7 Jul 2026</b> → date secured. Balance due week before wedding.</div>
      </div>
      <div class="card sec"><h3>Other vendors</h3>
      <table><thead><tr><th>Category</th><th>Vendor</th><th>Status</th><th class="num">Cost</th><th class="num">Paid</th></tr></thead><tbody>
      <tr><td>Photographer</td><td>Lia Rodrigues</td><td><span class="pill ok">Booked</span></td><td class="num">€1,875.00</td><td class="num">€560.00</td></tr>
      <tr><td>DJ / Music</td><td>Bruno (FixTheMusic)</td><td><span class="pill ok">Booked</span></td><td class="num">€1,600.00</td><td class="num">€560.00</td></tr>
-     <tr><td>Coordinator</td><td>Cátia · Ode Stories</td><td><span class="pill ok">Confirmed</span></td><td class="num muted">+ €57 travel</td><td class="num muted">—</td></tr>
-     <tr><td>Bridal gown</td><td>Academia das Noivas (Sónia)</td><td><span class="pill ok">Confirmed</span></td><td class="num">€1,500.00</td><td class="num muted">—</td></tr>
-     <tr><td>Venue</td><td>Marriott Praia D'El Rey</td><td><span class="pill ok">Booked</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
+     <tr><td>Coordinator</td><td>Cátia · Ode Stories</td><td><span class="pill ok">Confirmed</span></td><td class="num">€617.00</td><td class="num muted">—</td></tr>
+     <tr><td>Bridal gown</td><td>Academia das Noivas (Sónia)</td><td><span class="pill ok">Confirmed</span></td><td class="num">€1,500.00</td><td class="num">€750.00</td></tr>
+     <tr><td>Venue</td><td>Marriott Praia D'El Rey</td><td><span class="pill ok">Booked</span></td><td class="num muted">TBD</td><td class="num">€1,500.00</td></tr>
      <tr><td>Hair & Makeup</td><td>—</td><td><span class="pill todo">To book</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
-     <tr><td>Cake</td><td>—</td><td><span class="pill todo">To book</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
-     <tr><td>Stationery</td><td>Rafaela · Alma Design (rec.)</td><td><span class="pill todo">To contact</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
+     <tr><td>Cake</td><td>Teresa Henriques</td><td><span class="pill ok">Booked</span></td><td class="num">€550.00</td><td class="num">€165.00</td></tr>
+     <tr><td>Stationery</td><td>Rafaela · Alma Atelier</td><td><span class="pill todo">To contact</span></td><td class="num muted">TBD</td><td class="num muted">—</td></tr>
      </tbody></table>
-     <div class="note">Known booked vendors total <b>€8,016.50 + €57</b> (Helart €4,541.50 · Lia €1,875 · Bruno €1,600 · Cátia travel €57). Deposits paid to date: <b>€1,120</b>.</div></div>
+     <div class="note">Known booked vendors total <b>€9,618.50</b> (Helart €4,976.50 · Lia €1,875 · Bruno €1,600 · Teresa cake €550 · Cátia €617) + venue (TBD). Deposits paid to date: <b>€6,303.25</b> (Helart €2,488.25 · Marriott €1,500 · Lia €560 · Bruno €560 · Teresa €165 · Cátia €280 · Academia gown €750).</div></div>
      <div class="card sec"><h3>📊 Plan vs Actual — booked categories</h3>
        <table><thead><tr><th>Category</th><th class="num">Planned (Rec.)</th><th class="num">Actual / committed</th><th class="num">Variance</th></tr></thead><tbody>
-       <tr><td>Flowers &amp; Decoration → Helart</td><td class="num">€1,500</td><td class="num">€4,541.50</td><td class="num" style="color:#b06a6a">+€3,041.50</td></tr>
+       <tr><td>Flowers &amp; Decoration → Helart</td><td class="num">€1,500</td><td class="num">€4,976.50</td><td class="num" style="color:#b06a6a">+€3,476.50</td></tr>
        <tr><td>Photographer → Lia</td><td class="num">€2,000</td><td class="num">€1,875.00</td><td class="num" style="color:#5d7740">−€125.00</td></tr>
        <tr><td>DJ → Bruno</td><td class="num">€1,200</td><td class="num">€1,600.00</td><td class="num" style="color:#b06a6a">+€400.00</td></tr>
-       <tr><td>Day-of Coordinator → Cátia</td><td class="num">€1,500</td><td class="num">€1,557.00</td><td class="num" style="color:#b06a6a">+€57.00</td></tr>
+       <tr><td>Day-of Coordinator → Cátia</td><td class="num">€1,500</td><td class="num">€617.00</td><td class="num" style="color:#5d7740">−€883.00</td></tr>
        <tr><td>Wedding Dress → Academia</td><td class="num">€500</td><td class="num">~€1,500.00</td><td class="num" style="color:#b06a6a">+€1,000.00</td></tr>
-       <tr class="total"><td>Tracked subtotal</td><td class="num">€6,700</td><td class="num">€11,073.50</td><td class="num" style="color:#b06a6a">+€4,373.50</td></tr>
+       <tr><td>Wedding Cake → Teresa</td><td class="num">€500</td><td class="num">€550.00</td><td class="num" style="color:#b06a6a">+€50.00</td></tr>
+       <tr class="total"><td>Tracked subtotal</td><td class="num">€7,200</td><td class="num">€11,118.50</td><td class="num" style="color:#b06a6a">+€3,918.50</td></tr>
        </tbody></table>
-       <div class="note">We're <b>~€4,374 over</b> on these five lines vs the Recommended plan — almost entirely the <b>florals</b> (Helart €4,542 vs €1,500 planned) and the <b>custom gown</b> (€1,500 vs €500). Photographer came in under; DJ &amp; coordinator slightly over. Venue &amp; remaining categories still to track.</div>
+       <div class="note">We're <b>~€3,919 over</b> on these six lines vs the Recommended plan — almost entirely the <b>florals</b> (Helart €4,977 vs €1,500 planned) and the <b>custom gown</b> (€1,500 vs €500). Photographer &amp; coordinator came in well under (coordinator €617 vs €1,500 planned); DJ &amp; cake slightly over. Venue &amp; remaining categories still to track.</div>
      </div>
      <div class="card sec"><h3>🗂 Original plan — RECOMMENDED option</h3>
        <p class="tag">Agreed reference budget · Marriott Scenario Simulator · 65 adults + 8 kids · Feb 2026.</p>
@@ -541,6 +799,60 @@ function tab_budget(){
      </div>`;
 }
 
+function tab_program(){
+  const prow = ([t,b,d]) => `<tr><td class="num" style="white-space:nowrap;vertical-align:top"><b>${esc(t)}</b></td><td style="vertical-align:top;min-width:150px"><b>${esc(b)}</b></td><td>${esc(d)}</td></tr>`;
+  const ptable = rows => `<div style="overflow-x:auto"><table><thead><tr><th style="width:74px">Time</th><th style="width:170px">Moment</th><th>What happens</th></tr></thead><tbody>${rows.map(prow).join("")}</tbody></table></div>`;
+
+  const ceremony = [
+    ["15:30","Guests seated","Ceremony gardens (Half-Moon Garden, frontal sea view) — curved fanned seating, ocean balustrade behind."],
+    ["16:00","Processional","Down the calçada aisle — wedding party enters, then the bride."],
+    ["16:05","Ceremony","Civil / symbolic ceremony led by close friend Max (celebrant)."],
+    ["16:20","Vows & ring exchange","Personal ring-exchange moment."],
+    ["16:25","Pronouncement & recessional","Married! Recessional back up the aisle."],
+    ["16:35","Cocktail hour","Drinks & canapés on the lawn · Bruno's ambient set · group photos."],
+    ["17:30","Couple portraits","Golden-hour couple session with Lia."],
+    ["18:20","Move to reception","Guests called through to the covered terrace for dinner."],
+  ];
+  const dinner = [
+    ["18:20","Guests called to seats","Cátia signals the end of cocktails; Bruno lowers the music with a soft seating cue. Guests find their place cards."],
+    ["18:30","Grand entrance","Caryn & Lars enter to their chosen track — standing applause — then take their seats at the head of the long table."],
+    ["18:32","Toastmaster opens","Welcome; frames the Danish-style dinner format and the rhythm (when to applaud / clink for a kiss). ~5 min."],
+    ["18:37","Opening words","Brief framing; acknowledges Caryn's parents who can't be there in person. ~2 min."],
+    ["18:40","Starter served","Emerald starter · wine pouring begins. ~20 min."],
+    ["19:00","Speeches — Caryn's sisters","UAE sister, then US sister — two 3-min speeches open the night."],
+    ["19:06","🇩🇰 Festsang 1","Guest-led personalised song to a familiar melody; lyrics printed at each setting. ~4 min."],
+    ["19:15","Main course served","Emerald main — the main eating block. ~25 min."],
+    ["19:40","Speeches — Lars's side","Ib (father, 5 min) · Marianne (sister, 3 min) · optional: Tove, Mette, Gunnar (3 min each)."],
+    ["19:57","🎉 The Shoe Game","Caryn & Lars back-to-back, ~12 questions, raise a shoe to answer — the comic peak. ~15 min."],
+    ["20:12","🇩🇰 Festsang 2","A second guest-led song — a lighter palate-cleanser. ~4 min."],
+    ["20:16","Dessert served","Emerald dessert. ~20 min."],
+    ["20:36","Speeches — friends","Angelica · Fatima (Dubai) · Martin · Bloch · Max (brief) — ~3 min each."],
+    ["20:50","Speech — Lars (groom)","The evening's key speech. ~5 min."],
+    ["20:55","Speech — Caryn (bride)","Optional. ~4 min."],
+    ["21:00","Coffee, tea, last drinks","Open period — stretch, visit the kids' lounge, photos. Ambient music."],
+    ["21:45","Final call","Toastmaster gathers the room; cake announcement; Lia gets in position."],
+  ];
+  const party = [
+    ["22:00","🎂 Cake cutting","At the styled round cake table — photo moment. ~5 min."],
+    ["22:05","First dance (couple)","Bruno cues the chosen song; Caryn & Lars dance solo, guests circle. ~4 min."],
+    ["22:10","Family dances","Caryn with a sister; Lars with Marianne (or Ib); optional song with close family. ~6 min."],
+    ["22:16","Open dance floor","Everyone invited on; Bruno lifts to a crowd-pleaser. ~20 min."],
+    ["22:35","🇵🇭 Money Dance","Sayaw ng Pera — two queues form; guests dance briefly and pin money to ivory sashes. ~12 min."],
+    ["22:47","Open dance floor","Party continues. ~25 min."],
+    ["~23:15","🇵🇭 Newspaper Dance","Sayaw sa Diyaryo — couples dance on a newspaper that folds every 60s; last standing wins. ~10 min."],
+    ["~23:50","🇩🇰 Bridal Waltz","Brudevals — guests form a tight circle and close in around the couple as they waltz. ~4 min."],
+    ["00:00","Late-night supper","Marriott late-night service — energy reset for the late party."],
+    ["02:00","Last dance","Final song; party ends."],
+  ];
+
+  return pagehead("The Day","Wedding Day Programme","Ceremony &amp; reception run-of-show for Sat 24 Jul 2027 — Marriott Praia D'El Rey. A Danish-style long dinner woven with Filipino traditions, paced so no block runs long.")
+  + `<div class="note">🕯 Programme / run-of-show only — the speech scripts &amp; toastmaster notes are kept private in <span class="tag">Reception/Reception Programme &amp; Draft Speeches.docx</span>. 🇩🇰 Danish &amp; 🇵🇭 Filipino traditions are marked.</div>
+     <div class="card sec"><h3>💍 Ceremony &amp; cocktails <span class="tag">16:00 · Half-Moon Garden</span></h3>${ptable(ceremony)}</div>
+     <div class="card sec"><h3>🍽 Reception — dinner &amp; speeches <span class="tag">18:30 – 21:45 · Covered Terrace</span></h3>${ptable(dinner)}
+       <div class="note">Danish-style long dinner: courses, speeches, songs &amp; one game take turns so the room never sags. Optional speakers (Tove, Mette, Gunnar, Caryn) only if time allows.</div></div>
+     <div class="card sec"><h3>🎉 Reception — cake, dances &amp; party <span class="tag">22:00 – 02:00</span></h3>${ptable(party)}</div>`;
+}
+
 function tab_venue(){
   return pagehead("Location","Venue — Marriott Praia D'El Rey","Clifftop oceanfront resort in Óbidos. Ceremony in the gardens, reception on the covered terrace.")
   + `<div class="grid g2">
@@ -570,6 +882,47 @@ function tab_venue(){
         </ul>
       </div>
     </div>
+    <div class="card sec"><h3>🎁 What the venue package includes</h3>
+      <div class="grid g2">
+        <div>
+          <p><b>Spaces</b></p>
+          <ul class="dot">
+            <li>Half-Moon Garden — ceremony (frontal sea view; indoor room back-up included)</li>
+            <li>Covered Terrace — dinner + party</li>
+            <li>+2 hours after midnight on the Covered Terrace</li>
+          </ul>
+          <p><b>Furniture &amp; setup <span class="muted">(in venue fee)</span></b></p>
+          <ul class="dot">
+            <li>Tables, dining chairs, silverware &amp; glassware, linens</li>
+            <li>Rectangular tables seating up to 70 · one round table for the cake</li>
+            <li>Dining chairs w/ grey cushions (white covers available)</li>
+            <li>Ceremony: padded chairs, sun hats, mineral-water station, ceremony table</li>
+            <li>Pendant lights allowed · may hang textile / décor (with care)</li>
+          </ul>
+          <p><b>Accommodation</b></p>
+          <ul class="dot"><li>Complimentary Bridal Ocean-View Room, wedding night</li></ul>
+        </div>
+        <div>
+          <p><b>Food &amp; beverage <span class="muted">(base proposal)</span></b></p>
+          <ul class="dot">
+            <li>Cocktail canapés in the gardens (1h service)</li>
+            <li>Cocktail drinks — Option 2: juice, Moscatel/ports, Martini, regional wines, water</li>
+            <li>Selection of 6 canapés</li>
+            <li>Reception dinner — Emerald 3-course menu <span class="muted">· Diamond menu also offered</span></li>
+            <li>Dinner drinks — sommelier Option 2: water, juices, beer, soft drinks, coffee/tea</li>
+            <li>Open bar — 2h, Option 1</li>
+            <li>Children's dinner — 50% of adult</li>
+          </ul>
+          <p><b>Rental / logistics</b></p>
+          <ul class="dot">
+            <li>Ceremony logistics (50–100 pax)</li>
+            <li>Covered Terrace room rental</li>
+            <li>Night service after midnight (to 3am)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note"><b>Not included:</b> decoration, entertainment / DJ, AV, wedding cake (arranged separately). Final menu &amp; per-person pricing are confirmed at the tasting with Marriott (from Jan 2027); menu/headcount may still change the total.</div>
+    </div>
     <div class="card sec"><h3>📍 Map</h3>
       <iframe class="mapframe" loading="lazy" src="https://maps.google.com/maps?q=Praia%20D'El%20Rey%20Marriott%20Golf%20%26%20Beach%20Resort%2C%20%C3%93bidos&t=&z=13&ie=UTF8&iwloc=&output=embed" title="Venue map"></iframe>
     </div>
@@ -581,11 +934,17 @@ function tab_venue(){
         }).join("")}
       </div>
       <div class="note">Praia D'El Rey Marriott — selected venue shots.</div>
+    </div>
+    <div class="card sec"><h3>📄 Contract <span class="pill ok">On file</span></h3>
+      <div class="linkbtns">
+        <a class="btn ghost" href="Hub%20Assets/contracts/venue-marriott-signed.pdf" target="_blank">Open signed contract (PDF) ↗</a>
+      </div>
+      <div class="note">Signed by both parties (Mar 2026). Final menu &amp; details confirmed at the tasting with Marriott (from Jan 2027).</div>
     </div>`;
 }
 
 function tab_floral(){
-  return pagehead("Helart","Floral &amp; Design + Styling","Hélia Arte (Helart) — dried + artificial pampas, candlelight, sculptural & organic in nude/cream/bronze.")
+  return pagehead("Helart","Floral &amp; Design + Styling","Hélia Arte (Helart) — dried &amp; artificial florals + candlelight, sculptural &amp; organic in nude/cream/bronze (pampas dropped — invasive in PT).")
   + `<div class="grid g2">
       <div class="card"><h3>Contact</h3>
         <dl class="kv">
@@ -600,11 +959,11 @@ function tab_floral(){
           <a class="btn ghost" href="https://www.helart.pt/" target="_blank">helart.pt ↗</a>
           <a class="btn ghost" href="https://www.instagram.com/helart_pt/" target="_blank">Instagram ↗</a>
         </div>
-        <div class="note">Status: finalizing 2nd quote with our adjustments. Next: confirm final figure → pay 50% to reserve.</div>
+        <div class="note"><b>Status: BOOKED</b> → date secured. <b>Next: mock-up meeting end of Oct 2026</b> (seasonal flowers). Note: Lars owns the Helart + venue design coordination.</div>
       </div>
       <div class="card"><h3>Palette &amp; materials</h3>
         <p><b>Colours:</b> nude, white, soft sand, cream, warm brown / bronze. No pinks.</p>
-        <p><b>Flowers:</b> dried flowers, artificial pampas, roses, dahlia, hydrangeas + seasonal in tone.</p>
+        <p><b>Flowers:</b> dried flowers + legal pampas alternatives (pampas is invasive in PT), roses, dahlia, hydrangeas + seasonal in tone.</p>
         <p><b>Style:</b> sculptural, organic, candlelight-forward.</p>
       </div>
     </div>
@@ -616,7 +975,7 @@ function tab_floral(){
           <li>2× Bali sun umbrellas (drinks table + band)</li>
           <li>Cream draped tablecloths · U-layout</li>
           <li>Centerpieces — glass cylinders, ivory pillar candles (fewer)</li>
-          <li>Gold cutlery (reallocated from candle budget)</li>
+          <li>Gold cutlery</li>
           <li>Table-end + cake — reuse ceremony florals</li>
           <li>Bridal bouquet · groom's boutonnière</li>
           <li>Napkins — <b>we supply</b> · Ceiling — <b>none for now</b></li>
@@ -627,8 +986,8 @@ function tab_floral(){
           <li>Structures / stands — quote requested</li>
           <li>Floral + candle styling on <b>welcome / entrance</b> sign only</li>
           <li>No floral décor on toilet & cake signage</li>
-          <li>Printed signs → <b>Rafaela, Alma Design</b> (Helart recommendation)</li>
-          <li>Want to see Helart's signage samples / photos</li>
+          <li>Printed signs → <b>Rafaela · Alma Atelier</b> · +351 939 257 091 · atlierdesignalma@gmail.com</li>
+          <li>Helart signage samples/photos received (Jun 2026)</li>
         </ul>
       </div>
     </div>
@@ -643,11 +1002,17 @@ function tab_floral(){
     </div>
     <div class="card sec"><h3>🎨 Design proposal reference</h3>
       <div class="drop">Drop Helart's proposal / mockup images into <b>~/Desktop/Wedding 2027/Hub Assets/helart/</b> and tell Claude — I'll display the design references here.</div>
+    </div>
+    <div class="card sec"><h3>📄 Original contract <span class="pill ok">On file</span></h3>
+      <div class="linkbtns">
+        <a class="btn ghost" href="Hub%20Assets/contracts/floral-helart-quote.pdf" target="_blank">Open Helart quote / contract (PDF) ↗</a>
+      </div>
+      <div class="note">Helart final quote ("3rd Budget", VAT included) — the agreed scope for the day. File: <span class="tag">Hub Assets/contracts/floral-helart-quote.pdf</span>. <b>Official invoice (fatura) for the confirmed booking received 9 Jul 2026.</b></div>
     </div>`;
 }
 
 function tab_dj(){
-  return pagehead("Music","DJ &amp; Music","DJ Bruno — booked & deposit paid. Full Day Pack covering ceremony → cocktail → dinner → party.")
+  return pagehead("Music","DJ &amp; Music","DJ Bruno — booked. Full Day Pack covering ceremony → cocktail → dinner → party.")
   + `<div class="grid g2">
       <div class="card"><h3>Status &amp; contact <span class="pill ok">Booked</span></h3>
         <dl class="kv"><dt>DJ</dt><dd>Bruno (Algarve, travels)</dd>
@@ -656,13 +1021,9 @@ function tab_dj(){
         <dt>Profile</dt><dd><a href="https://www.fixthemusic.com/dj-portugal-bruno" target="_blank">fixthemusic.com</a></dd>
         <dt>Booked on</dt><dd>29 May 2026</dd></dl>
       </div>
-      <div class="card"><h3>Payments</h3>
-        <table><tbody>
-        <tr><td>Deposit (35%)</td><td class="num">€560.00</td><td><span class="pill ok">Paid</span></td></tr>
-        <tr><td>Balance (65%) · by 9 Jun 2027</td><td class="num">€1,040.00</td><td><span class="pill warn">Pending</span></td></tr>
-        <tr class="total"><td>Total</td><td class="num">€1,600.00</td><td></td></tr>
-        </tbody></table>
-        <div class="note">All payments via the FixTheMusic platform. Set a reminder ~early May 2027 for the balance.</div>
+      <div class="card"><h3>Booking</h3>
+        <p>Booked &amp; confirmed via the <b>FixTheMusic</b> platform (ref h6397w) — Full Day Pack.</p>
+        <p class="muted">All communication and files go through FixTheMusic / Bruno directly.</p>
       </div>
     </div>
     <div class="grid g2 sec">
@@ -716,32 +1077,35 @@ function tab_dj(){
     <div class="card sec"><h3>⛔ Do-not-play (binding)</h3>
       <p>Cheesy wedding standards (YMCA, Macarena, Cha Cha Slide, Chicken Dance) · hard EDM / festival drops · country · religious music · explicit hip-hop · 10-min club mixes · sad / break-up songs · anthems / politicized tracks · 90s novelty.</p>
       <div class="note">Also send Bruno a private "ex-baggage" don't-list if any.</div>
+    </div>
+    <div class="card sec"><h3>📄 Original contract <span class="pill na">No formal contract</span></h3>
+      <div class="note">No separate written contract — booked &amp; confirmed via the FixTheMusic platform.</div>
     </div>`;
 }
 
 function tab_photo(){
-  return pagehead("Photography","Photographer — Lia Rodrigues","Booked & deposit paid. Enchantment Collection — emotional, natural, editorial. Two photographers + engagement session.")
+  return pagehead("Photography","Photographer — Lia Rodrigues","Booked. Enchantment Collection — emotional, natural, editorial. Two photographers + engagement session.")
   + `<div class="grid g2">
       <div class="card"><h3>Status &amp; contact <span class="pill ok">Booked</span></h3>
         <dl class="kv"><dt>Studio</dt><dd>Lia Rodrigues Emotions Photography</dd>
         <dt>Email</dt><dd>lia.rodrigues@gmail.com</dd>
         <dt>Phone</dt><dd>+351 962 570 438</dd>
         <dt>Base</dt><dd>Sintra · ~1h to venue</dd>
-        <dt>Package</dt><dd>Enchantment · up to 12h</dd>
-        <dt>Includes</dt><dd>2 photographers · engagement session · private gallery</dd></dl>
+        <dt>Collection</dt><dd>Enchantment</dd>
+        <dt>Coverage</dt><dd>Up to 12 h — fits the 10–11 h day</dd>
+        <dt>Includes</dt><dd>2 photographers · engagement session · private online gallery · high-res edited images (fine-art albums &amp; extras optional)</dd></dl>
         <div class="linkbtns">
           <a class="btn ghost" href="https://www.liarodriguesphotography.com/" target="_blank">Website ↗</a>
           <a class="btn ghost" href="https://www.instagram.com/liarodrigues_photography/" target="_blank">Instagram ↗</a>
         </div>
       </div>
-      <div class="card"><h3>Payments (30 / 50 / 20)</h3>
-        <table><tbody>
-        <tr><td>Deposit (30%)</td><td class="num">€560.00</td><td><span class="pill ok">Paid</span></td></tr>
-        <tr><td>Pre-wedding (50%) · ~17 Jul 2027</td><td class="num">€937.50</td><td><span class="pill warn">Pending</span></td></tr>
-        <tr><td>On gallery delivery (20%)</td><td class="num">€377.50</td><td><span class="pill warn">Pending</span></td></tr>
-        <tr class="total"><td>Total (incl. €75 travel)</td><td class="num">€1,875.00</td><td></td></tr>
-        </tbody></table>
-        <div class="note">To do: sign contract · fill questionnaire · book engagement session · schedule intro call.</div>
+      <div class="card"><h3>Next steps with Lia</h3>
+        <ul class="dot">
+          <li>Sign contract</li>
+          <li>Fill in the wedding questionnaire</li>
+          <li>Book the engagement session (Oct 2026)</li>
+          <li>Schedule the intro / timeline call</li>
+        </ul>
       </div>
     </div>
     <div class="card sec"><h3>Coverage timeline</h3>
@@ -767,6 +1131,73 @@ function tab_photo(){
         }).join("")}
       </div>
       <div class="note">Samples from <a href="https://www.liarodriguesphotography.com/" target="_blank">liarodriguesphotography.com</a> — emotional, natural, editorial.</div>
+    </div>
+    <div class="card sec"><h3>📄 Original contract <span class="pill ok">On file</span></h3>
+      <div class="linkbtns">
+        <a class="btn ghost" href="Hub%20Assets/contracts/photographer-lia-contract.pdf" target="_blank">Open contract (PDF) ↗</a>
+        <a class="btn ghost" href="Hub%20Assets/contracts/photographer-lia-collections-guide.pdf" target="_blank">Collections &amp; investment guide (PDF) ↗</a>
+      </div>
+      <div class="note">Lia Rodrigues Emotions Photography — service contract (Leandra Sofia de Matos Rodrigues) + collections guide. Chosen: <b>Enchantment Collection</b>. Files in <span class="tag">Hub Assets/contracts/</span>.</div>
+    </div>`;
+}
+
+function tab_cake(){
+  return pagehead("Wedding Cake","Cake — Teresa Henriques","Booked. ~80 cm long Lambeth-style buttercream in cream/ivory — draped swags + “just married” script. Flavour chosen: NYC.")
+  + `<div class="grid g2">
+      <div class="card"><h3>Status &amp; contact <span class="pill ok">Booked</span></h3>
+        <dl class="kv"><dt>Artist</dt><dd>Teresa Henriques — Wedding Cake Artist</dd>
+        <dt>WhatsApp</dt><dd>+351 916 129 992</dd>
+        <dt>Delivery</dt><dd>Praia D'El Rey, Óbidos — included</dd>
+        <dt>Date</dt><dd>24 Jul 2027 — secured</dd></dl>
+        <div class="note"><b>Flavour chosen: NYC ✓</b> (confirmed with Teresa 13 Jul 2026). Planning continues over WhatsApp.</div>
+      </div>
+      <div class="card"><h3>Design &amp; delivery</h3>
+        <p>~80 cm long Lambeth-style buttercream cake in cream/ivory (see concept below), delivered to Praia D'El Rey.</p>
+        <p class="muted">Flavour chosen: <b>NYC</b> (from the "Flavours of the World" catalogue).</p>
+      </div>
+    </div>
+    <div class="card sec"><h3>🎂 The concept — my cake idea</h3>
+      <p>Long rectangular <b>~80 cm</b> cake, elegant piped <b>Lambeth / vintage buttercream</b> — draped swags &amp; scalloped piping in soft <b>cream / ivory</b>, with a delicate <b>“just married”</b> script on top. Clean, romantic, sculptural (reference style à la Maira's Cakes). Matches the wedding's nude/cream palette.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+        <img src="Hub%20Assets/cake/concept-1.png" style="width:100%;height:auto;border-radius:10px;display:block" alt="Cake concept reference — draped Lambeth piping, just married script">
+        <img src="Hub%20Assets/cake/concept-2.png" style="width:100%;height:auto;border-radius:10px;display:block" alt="Cake concept reference — long white cake with candles / strawberries">
+      </div>
+      <div class="note">Reference photos sent to Teresa (also saved in <span class="tag">Hub Assets/cake/</span>).</div>
+    </div>
+    <div class="card sec"><h3>🍰 Proposed flavours — “Flavours of the World”</h3>
+      <p class="tag">Teresa's catalogue · flexible · final combination to be chosen together via WhatsApp.</p>
+      <div class="grid g2">
+        <div>
+          <p><b>Chocolate cake</b></p>
+          <ul class="dot">
+            <li><b>Zanzibar</b> — hazelnut brigadeiro · coffee &amp; Baileys mousse · milk &amp; caramel mousse</li>
+            <li><b>Brasil</b> — dulce de leche &amp; nuts · port wine mousse · lemon cream</li>
+            <li><b>NYC</b> — cream cheese · red fruits · crunchy red fruits</li>
+          </ul>
+          <p><b>Lemon cake</b> <span class="muted">(poppy seeds)</span></p>
+          <ul class="dot">
+            <li><b>Tropical</b> — mango · lemon crunch · passion fruit</li>
+            <li><b>Maldives</b> — pistachio · creamy strawberry · lemon mousse</li>
+            <li><b>Dubai</b> — champagne mousse · caramelized almonds · salted caramel</li>
+            <li><b>Alentejo</b> — bitter almond mousse · blueberries · lavender mousse</li>
+          </ul>
+        </div>
+        <div>
+          <p><b>Vanilla cake</b></p>
+          <ul class="dot">
+            <li><b>Italy</b> — peanut brigadeiro · salted caramel · lemon mousse w/ Limoncello</li>
+            <li><b>Kenya</b> — pineapple · mint w/ mojito · creamy coconut</li>
+            <li><b>France</b> — champagne mousse · red fruits · crunchy red fruits</li>
+          </ul>
+          <p><b>Red velvet</b></p>
+          <ul class="dot"><li><b>Turkiye</b> — cream cheese · crunchy red fruits · rose mousse</li></ul>
+          <p><b>Nut cake</b></p>
+          <ul class="dot"><li><b>Portugal</b> — egg cream · egg threads · egg &amp; caramel cream</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="card sec"><h3>📄 Original contract <span class="pill na">No formal contract</span></h3>
+      <div class="note">No separate written contract — booked directly by message. Booking summary kept at <span class="tag">Vendors/Wedding Cake - Teresa Henriques/README - Cake Booking Summary.md</span>.</div>
     </div>`;
 }
 
@@ -848,26 +1279,24 @@ function tab_guests(){
 }
 
 function tab_coordinator(){
-  return pagehead("Hand-off","Same-Day Coordinator","Takes over ~1 month before (≈ 24 Jun 2027). Owns the run-of-show and every vendor on the day.")
+  return pagehead("Hand-off","Same-Day Coordinator","Full handover on 1 Jul 2027 — everything is set before then. Cátia owns the run-of-show and every vendor from handover through the day.")
   + `<div class="grid g2">
       <div class="card"><h3>Status <span class="pill ok">Confirmed</span></h3>
         <dl class="kv"><dt>Coordinator</dt><dd>Cátia — Ode Stories</dd>
         <dt>Email</dt><dd>hello@odestories.pt</dd>
-        <dt>Travel</dt><dd>Almada → Óbidos · €57</dd>
-        <dt>Payment</dt><dd>50% booking · 50% week before</dd>
-        <dt>Handover</dt><dd>~24 Jun 2027 (1 month out)</dd>
+        <dt>Based</dt><dd>Almada (travels to Óbidos)</dd>
+        <dt>Handover</dt><dd><b>1 Jul 2027</b></dd>
         <dt>End time</dt><dd>Party to 02:00 (Marriott covers 2h post-midnight)</dd></dl>
         <div class="linkbtns">
           <a class="btn ghost" href="https://www.odestories.pt/" target="_blank">odestories.pt ↗</a>
           <a class="btn ghost" href="https://www.instagram.com/odestories/" target="_blank">Instagram ↗</a>
         </div>
-        <div class="note">To do: sign service agreement · intro call (July) · send Caryn's legal name / address / phone.</div>
+        <div class="note"><b>Contract signed ✓ · 50% deposit €280 paid (13 Jul 2026).</b> Balance €337 (incl. €57 travel) due the week before. Next: intro call with Cátia.</div>
       </div>
       <div class="card"><h3>Handover pack to prepare</h3>
         <ul class="dot"><li>Final day-of timeline</li><li>Vendor contact sheet (all numbers)</li>
         <li>Floor plans — ceremony + reception</li><li>Seating chart &amp; family-group photo list</li>
-        <li>Payments outstanding &amp; who pays whom</li><li>Décor / setup notes (Helart)</li>
-        <li>Rain / wind backup plan</li></ul>
+        <li>Décor / setup notes (Helart)</li><li>Rain / wind backup plan</li></ul>
       </div>
     </div>
     <div class="card sec"><h3>Coordinator follow-ups (on the day)</h3>
@@ -877,26 +1306,31 @@ function tab_coordinator(){
         <ul class="dot"><li>Keep speeches &amp; cake on schedule</li><li>Handle guest questions / issues</li>
         <li>Coordinate sunset portraits window</li><li>Manage end-of-night &amp; dismantle</li></ul>
       </div>
+    </div>
+    <div class="card sec"><h3>📄 Original contract <span class="pill ok">On file</span></h3>
+      <div class="linkbtns">
+        <a class="btn ghost" href="Hub%20Assets/contracts/coordinator-ode-stories.pdf" target="_blank">Open coordination contract (PDF) ↗</a>
+      </div>
+      <div class="note">Ode Stories "Wedding Day Coordination Contract" (dated 08.07.2026) — <b>signed &amp; agreed 13 Jul 2026</b>; 50% deposit €280 paid same day. File: <span class="tag">Hub Assets/contracts/coordinator-ode-stories.pdf</span>.</div>
     </div>`;
 }
 
 function tab_bridal(){
-  return pagehead("The Dress","Bridal Gown — Academia das Noivas","Custom haute-couture mermaid gown by Sónia Rodrigues. €1,500 agreed — officially booked, scheduling the first visit.")
+  return pagehead("The Dress","Bridal Gown — Academia das Noivas","Custom haute-couture mermaid gown by Sónia Rodrigues — Visit 1 done, 50% deposit €750 paid.")
   + `<div class="grid g2">
-      <div class="card"><h3>Atelier &amp; status <span class="pill ok">Confirmed €1,500</span></h3>
+      <div class="card"><h3>Atelier &amp; status <span class="pill ok">Confirmed</span></h3>
         <dl class="kv">
           <dt>Atelier</dt><dd>Academia das Noivas (Haute Couture)</dd>
           <dt>Designer</dt><dd>Sónia Rodrigues</dd>
           <dt>Email</dt><dd>academiadasnoivas@hotmail.com</dd>
           <dt>Location</dt><dd>Setúbal area (~2h from Caldas)</dd>
           <dt>Model</dt><dd>“Light of Lace” · Pearl Edition · Coll. 2026</dd>
-          <dt>Price</dt><dd>€1,500 (approved 18 Jun 2026)</dd>
         </dl>
         <div class="linkbtns">
           <a class="btn ghost" href="mailto:academiadasnoivas@hotmail.com">Email ↗</a>
           <a class="btn ghost" href="https://www.google.com/search?q=Academia+das+Noivas+Atelier+Set%C3%BAbal" target="_blank">Find online ↗</a>
         </div>
-        <div class="note">Caryn accepted — “officially in.” Doing everything in person on Visit 1 (no online). Lace now in store to view. Awaiting Sónia's reply on date / deposit / payment split / what to bring.</div>
+        <div class="note">Caryn accepted — “officially in.” Everything done in person on Visit 1 (no online). Lace now in store to view. Awaiting Sónia's reply on the Visit 1 date &amp; what to bring.</div>
       </div>
       <div class="card"><h3>The design</h3>
         <p>Romantic, feminine <b>mermaid (fit-and-flare)</b> gown — pearl floral embroidered lace with subtle sequins; lace concentrated on bodice, hips &amp; upper skirt, softly extending onto a light tulle skirt. Floral lace appliqué straps · elegant low back.</p>
@@ -936,12 +1370,13 @@ function tab_bridal(){
       <div class="note">Pearl Edition croqui descritivo (tap to view full) + the actual pearl floral lace, now in store to see.</div>
     </div>
     <div class="card sec"><h3>💭 Caryn's ideal gown — inspiration</h3>
-      <div class="gallery cols4">
+      <div class="gallery full">
         ${["ideal-1.png","ideal-2.png","ideal-3.png","ideal-4.png"].map(f=>{
           const u="https://caryn-pids.github.io/wedding-ceremony-plan/assets/gown/"+f;
           return '<a href="'+u+'" target="_blank"><img loading="lazy" src="'+u+'" alt="Ideal gown inspiration"></a>';
         }).join("")}
       </div>
+      <div class="note">Each image shows in full (no cropping) — tap any to open the full-size version.</div>
     </div>
     <div class="card sec"><h3>Awaiting from Sónia · then to do</h3>
       <div class="grid g2">
@@ -958,11 +1393,272 @@ function tab_bridal(){
           <li>Full email log: <span class="tag">Bridal Gown/Email Log - Academia das Noivas (Sónia).md</span></li>
         </ul>
       </div>
+    </div>
+    <div class="card sec"><h3>📄 Original contract <span class="pill ok">On file</span></h3>
+      <div class="linkbtns">
+        <a class="btn ghost" href="Hub%20Assets/contracts/gown-academia-original-PT.pdf" target="_blank">Original (Portuguese, PDF) ↗</a>
+        <a class="btn ghost" href="Hub%20Assets/contracts/gown-academia-english.pdf" target="_blank">English translation (PDF) ↗</a>
+        <a class="btn ghost" href="Hub%20Assets/contracts/gown-academia-english.docx" target="_blank">English (editable DOCX) ↓</a>
+      </div>
+      <div class="note">Academia das Noivas service contract ("Confeção de Vestido de Noiva por Medida") — <b>signed at Visit 1 · 50% deposit €750 paid (Jul 2026)</b>; balance €750 before handover. The <b>PDF</b> links open in-browser for quick reading; the DOCX is the editable copy. Files in <span class="tag">Hub Assets/contracts/</span>.</div>
     </div>`;
 }
 
-const BUILDERS = {dashboard:tab_dashboard,timeline:tab_timeline,dayof:tab_dayof,checklist:tab_checklist,
-  budget:tab_budget,venue:tab_venue,floral:tab_floral,dj:tab_dj,photo:tab_photo,bridal:tab_bridal,seating:tab_seating,
+/* ---- Guest Experience checklist (distilled from the Playbook — Dos & small kindnesses) ---- */
+const GUESTEXP = {
+  "1 · Before the wedding — comms & prep":[
+    "Send a welcome email 4–6 weeks out (address, arrival time, dress code, weather, kids plan, key contacts)",
+    "Publish everything on carynandlarswedding.com as the one canonical place",
+    "Include venue GPS coordinates + full name (Praia D'El Rey Marriott Golf & Beach Resort)",
+    "Share driving directions from Lisbon airport via the A8 (warn about electronic tolls)",
+    "Send a 'what to pack' guide for July Portugal (light clothes, evening layer, sunscreen, hat, grass-friendly shoes)",
+    "Collect dietary restrictions & allergies via the RSVP form",
+    "Publish a FAQ (parking, kids, gifts, dress code, weather, wifi…)",
+    "Introduce the key people: Cátia (coordinator), Max (celebrant), the nannies",
+    "Send a final-update message ~2 weeks before",
+    "Recommend accommodation options: Marriott (walk-to-venue), Óbidos, Peniche/Baleal",
+    "Give an emergency contact who is NOT you or Caryn (a friend or Cátia)",
+  ],
+  "2 · Arrival & first impressions":[
+    "Signposted welcome sign at the entrance in the boho-coastal style",
+    "A friend/family/Cátia's helper greeting guests as they arrive",
+    "Cold water + a light welcome drink ready on arrival (not just after cocktails)",
+    "A hand fan for each guest (doubles as photo prop)",
+    "Immediate shade available (parasols, lobby, interior lounge)",
+    "Bag/coat holding area, even for beach bags",
+    "Bruno playing soft ambient music from arrival onward",
+    "Proactively introduce far-flung guest clusters to each other",
+  ],
+  "3 · Weather — the July heat":[
+    "Brief Cátia to position the Marriott sun parasols before guests arrive",
+    "Extra hand fans at each ceremony seat",
+    "A 'refresh station': sunscreen, blotting papers, hand fans",
+    "Cold water bottles everywhere (welcome table, ceremony, dance floor, kids' zone)",
+    "Cooling towels for elderly guests",
+    "Reserve named shaded seats for the eldest guests",
+    "Ice-cold non-alcoholic options (sparkling water + lemon, iced tea)",
+    "Light blankets/wraps near the dance floor for the evening cool-down",
+    "Note in the dress code: bring a light layer for after dark",
+    "Hot coffee/tea/hot chocolate available late",
+    "Confirm the rain/wind backup trigger with Cátia one week before",
+  ],
+  "4 · The ceremony experience":[
+    "Reserve the first two rows for immediate family & elderly / mobility needs",
+    "Water station clearly visible",
+    "Space between rows so older guests can enter without squeezing",
+    "Kids seated with parents up front",
+    "Speakers positioned so the back row can hear",
+    "An assistant nearby to help elderly guests to their seats",
+    "Max opens by telling little ones they don't have to be quiet",
+    "Cátia checks the sun angle 30 min before so it's not in guests' eyes",
+    "Everyone sits — no standing ceremony",
+    "Print a small programme card (order of service, key names, a warm note)",
+    "Translation card / QR with key phrases in Danish, Bisaya & Filipino",
+    "Keep the ceremony to ~27 min",
+    "Tissue at each seat if speeches will be emotional",
+  ],
+  "5 · Photos, phones & social":[
+    "Decide unplugged vs phones-OK and state it clearly at the arrival table",
+    "Assign a family member each side to gather group photos so Lia stays on candids",
+    "Set up a shared photo album link for guests to upload to",
+    "A small styled photo corner / booth",
+    "Announce photo moments clearly ('UAE crew group photo in 5 min')",
+    "Create a simple hashtag (e.g. #CarynAndLars2027)",
+    "WiFi password on a small card at each table",
+    "Ask consent before posting guest photos on social",
+  ],
+  "6 · Food, drink & dietary care":[
+    "Lock all dietary restrictions via RSVP by 1 May 2027",
+    "Categorise diets (veg, vegan, halal, GF, nut, shellfish, lactose) and give Marriott each specifically",
+    "Rice available as a side for Filipino guests; a sea bass alternative for Danish guests",
+    "Note allergies discreetly on place cards",
+    "A couple of 'universal' fallbacks (plain chicken / grilled fish)",
+    "Genuinely appealing kids' menu (buttered pasta, grilled chicken, fries)",
+    "Cátia checks each guest gets their correct meal",
+    "Water on every table, never empty; still + sparkling",
+    "A beautiful non-alcoholic signature mocktail + no/low-alc wine or beer",
+    "Coffee & tea from cocktail hour onward",
+    "Pace the open bar with food; late-night snacks before the alcohol peaks",
+  ],
+  "7 · Seating & introductions":[
+    "Group by shared interests, not just by 'side'",
+    "Mix cultures at at least half the tables",
+    "Keep elderly guests together AND near the bathroom",
+    "Seat parents of small kids near the kids'-lounge exit",
+    "Legible place cards (name + last initial, no unreadable calligraphy)",
+    "Seating-chart poster at the dining entrance",
+    "Save a spare seat or two for surprises / plus-ones",
+    "Do a family-introduction moment early (cocktails or start of dinner)",
+    "Assign 'ambassadors' from each family to welcome the other side",
+    "Caryn & Lars circulate during cocktails to introduce cross-family pairs",
+    "Don't seat feuding relatives or a 'singles table' together",
+  ],
+  "8 · Speeches & attention":[
+    "Cátia enforces every speaker's time limit",
+    "Space speeches between courses, not stacked",
+    "Warm the mic before each speaker",
+    "Alternate emotional & light speeches",
+    "Printed running order at each table",
+    "Water at every speaker position",
+    "Kids entertained in the lounge during long speech blocks",
+    "Interpret Danish speeches into English on the fly if the room needs it",
+    "No speeches after 22:00",
+  ],
+  "9 · Kids & families":[
+    "Give parents the nannies' numbers before the wedding",
+    "Check-in sheet per child (allergies, bedtime, comfort items)",
+    "Working baby monitor in the Sleep Room",
+    "Kids' welcome pack (colouring, stickers, evening headphones)",
+    "Include kids in a tradition or two if they're up for it",
+    "Changing area for babies (Cátia to confirm with Marriott)",
+    "Nannies message parents every ~30 min",
+    "Written kids'-plan note to parents the week before",
+    "Keep loud music away from the Sleep Room",
+  ],
+  "10 · Elderly guests & mobility":[
+    "Named shaded seating at the ceremony",
+    "Golf cart / wheelchair / arm-support on the paths between venues",
+    "Programme printed in 12–14pt for older eyes",
+    "Seat them away from the dance-floor speakers",
+    "A resting bench / quiet lounge to escape the noise",
+    "Assign a family member per elderly guest to check on them",
+    "Help them find their room after the party",
+    "Water constantly refilled at their table; hot drinks & blankets late",
+    "Accessible bathroom near their seating",
+    "Give them permission to leave early",
+  ],
+  "11 · The multicultural mix":[
+    "Announce English as the main language at the start",
+    "Translation help for non-English speakers (seated helper or app)",
+    "Printed translation cards for key moments (Danish, Bisaya, Portuguese)",
+    "Menu printed in English (+ Portuguese if translated)",
+    "Toastmaster introduces each cultural moment with a short explanation",
+    "Filipino elements: Money Dance (booked), a Filipino song, a dish option",
+    "Danish elements: Brudevals, Festsang, kiss traditions (booked)",
+    "Portuguese elements: local wine, late-night supper, local flowers",
+    "One American touch (photo booth / a shared-era song)",
+    "Have each family demonstrate their tradition to the wider room",
+  ],
+  "12 · Gen Z × oldies balance":[
+    "Music mix: 60s/70s, 80s/90s, and current pop — a song from every decade",
+    "A meaningful first-dance song (not just a trend track)",
+    "A slow dance in each 20–30 min block for elderly guests",
+    "Cross-generation games (Shoe Game, Newspaper Dance)",
+    "A 'family dance' to a song from the parents' era",
+    "Seating around the dance floor so elders can watch",
+    "A photo backdrop / props corner",
+    "Don't segregate by age or push a 'young party / old bedtime' vibe",
+  ],
+  "13 · Music & the dance floor":[
+    "Give Bruno the Must-Play / Do-Not-Play list in early 2027",
+    "Cultural anchors: an OPM classic, a Danish party classic, a fado-pop moment, ABBA",
+    "Take requests digitally (QR) and in person",
+    "Announce big moments — Money Dance, Newspaper Dance, Brudevals",
+    "Save the biggest crowd-pleasers for 23:00–01:00",
+    "A meaningful 'last dance' chosen in advance",
+    "Dinner music instrumental / background only",
+    "Quiet zones for guests needing a break from the music",
+  ],
+  "14 · Late-night care":[
+    "Marriott supper at 00:00 (booked) as the late-night anchor",
+    "Hot coffee & tea from 23:30",
+    "Flat shoes / flip-flops for tired dancers",
+    "Water bottles at every corner of the venue",
+    "Warm wraps for after midnight",
+    "A helper on standby to walk sleepy guests to their rooms",
+    "Pre-booked taxis / shuttles for guests staying elsewhere",
+    "A 'goodbye station' to leave a note or photo",
+    "A small exit favour (pastel de nata or a candle)",
+  ],
+  "15 · Practical logistics":[
+    "Phone charging station (iPhone, USB-C, micro-USB)",
+    "Printed venue map at arrival (bathrooms, kids' zone, sleep room, exit)",
+    "Clear signage for all key locations, in three languages",
+    "Lost & found with a designated person",
+    "First-aid kit with Cátia",
+    "Umbrellas for shade and rain",
+    "Emergency contact list posted (Cátia, concierge, taxi)",
+    "Bathroom basics: mirror, blotting papers, hair pins, tissues",
+    "Safety pins, tape, scissors on hand (Cátia)",
+    "A ginjinha 'shot moment' at some point",
+  ],
+  "16 · Personal touches":[
+    "Handwritten seating cards for every guest",
+    "A one-line personal thank-you note at each seat",
+    "A memory table honouring Caryn's parents (photo, flower, candle)",
+    "Signature cocktails named after the couple / a moment",
+    "Family photos of both sides displayed around the venue",
+    "A slideshow or photo wall of your story",
+    "The ceremony script printed as a keepsake",
+    "A fun guest book (Polaroid + written note)",
+    "A midnight surprise (sparklers / coordinated song)",
+  ],
+  "17 · Post-wedding follow-through":[
+    "Host a next-day brunch / informal gathering",
+    "Thank-you notes within 8 weeks (handwritten for close family)",
+    "Share the pro gallery within 2–3 months (Lia)",
+    "Share candid guest photos within 2–4 weeks",
+    "Follow up with international guests ('safe home, thank you')",
+    "Public thank-you on the website / socials",
+    "Thank the vendors publicly (Cátia, Bruno, Lia, Helart, Marriott, Teresa)",
+  ],
+  "18 · Emergency & backup":[
+    "Cátia holds a printed emergency list (Marriott, taxi, hospital, pharmacy)",
+    "Emergency kit: first aid, safety pins, tape, tissues, painkillers, antacids",
+    "A backup dress option for a wardrobe malfunction",
+    "A designated point-person per family group",
+    "Confirm weather-backup decision authority with Cátia",
+    "Nearest hospital identified (Peniche)",
+    "Cash on hand for taxis, tips, small emergencies",
+    "Cátia's number saved in every family's phone",
+    "A discreet 'help me' signal between you and Cátia",
+  ],
+  "19 · For you two, specifically":[
+    "Eat throughout the day — you won't have a real meal until ~19:00",
+    "Water in hand at all times; alcohol only after the ceremony",
+    "A 'safe space' room to retreat to for 5 minutes",
+    "Delegate everything on the day to Cátia",
+    "Take 5 minutes alone as a couple in the evening",
+    "Say yes to Lia's sunset couple portrait",
+    "Thank vendors briefly on the night",
+    "A snack basket in your Marriott room for after 02:00",
+  ],
+  "★ North-Star — the 15 that matter most":[
+    "Water everywhere. Never empty. Always cold.",
+    "Shade for elderly at the ceremony — named seats.",
+    "Signage everywhere (bathrooms, kids' zone, sleep room, exit).",
+    "The kids' zone works — nannies, sleep room, snacks.",
+    "Every culture has a moment, explained warmly.",
+    "Dietary needs handled — no guest goes hungry.",
+    "Speeches on time — Cátia enforces.",
+    "Music mixes generations (ABBA → OPM → current pop).",
+    "A memory table honours Caryn's parents.",
+    "Cross-family introductions during cocktails.",
+    "Photos of everyone — nobody left out.",
+    "Late-night care: coffee, blankets, taxis, warm words.",
+    "Caryn & Lars eat, drink water, breathe — delegate to Cátia.",
+    "Post-wedding thank-yous within 8 weeks, photos within 12.",
+    "Small kindnesses beat big gestures. Every time.",
+  ],
+};
+function gxpPct(){ let tot=0,done=0; for(const sec in GUESTEXP){ GUESTEXP[sec].forEach(t=>{ tot++; if(STATE.checked["GX·"+sec+"::"+t]) done++; }); } return tot?Math.round(done/tot*100):0; }
+function gxpRow(sec,t){ const id="GX·"+sec+"::"+t; const done=STATE.checked[id]?"done":""; return `<div class="check ${done}"><input type="checkbox" ${STATE.checked[id]?"checked":""} onchange="gxpToggle(this,'${esc(id).replace(/'/g,"\\'")}')"><label>${esc(t)}</label></div>`; }
+function gxpToggle(el,id){ STATE.checked[id]=el.checked; saveState(STATE); el.closest(".check").classList.toggle("done",el.checked); gxpRefresh(); }
+function gxpRefresh(){ const p=gxpPct(); const b=document.getElementById("gxpBar"),l=document.getElementById("gxpLbl"); if(b)b.style.width=p+"%"; if(l)l.textContent=p+"% complete"; }
+function tab_guestexp(){
+  let html = pagehead("Guests","Guest Experience","Dos, don'ts &amp; small kindnesses — tick each off as you lock it in. Progress saves in this browser.")
+   + `<div class="card"><h3>Overall progress</h3><div class="prog"><i id="gxpBar"></i></div><div class="stat-lbl" id="gxpLbl"></div></div>`
+   + `<div class="card"><div class="note">Distilled from <span class="tag">Guest Experience Playbook — Dos &amp; Don'ts.docx</span>. This tab is the actionable checklist; open the full playbook for the reasoning and the DON'Ts.</div></div>`;
+  for(const sec in GUESTEXP){
+    html += `<div class="card sec"><h3>${esc(sec)}</h3><div>`;
+    GUESTEXP[sec].forEach(t=>html += gxpRow(sec,t));
+    html += `</div></div>`;
+  }
+  return html;
+}
+
+const BUILDERS = {dashboard:tab_dashboard,timeline:tab_timeline,dayof:tab_dayof,program:tab_program,checklist:tab_checklist,
+  budget:tab_budget,venue:tab_venue,floral:tab_floral,dj:tab_dj,photo:tab_photo,bridal:tab_bridal,cake:tab_cake,seating:tab_seating,guestexp:tab_guestexp,
   guests:tab_guests,coordinator:tab_coordinator};
 
 function render(tab){
@@ -970,6 +1666,7 @@ function render(tab){
   $("#main").innerHTML = BUILDERS[tab]();
   if(tab==="dashboard"){ $("#dashDays").textContent = $("#cdDays").textContent; }
   if(tab==="checklist"){ refreshProgress(); }
+  if(tab==="guestexp"){ gxpRefresh(); }
   location.hash = tab;
   if(window.innerWidth<=860) document.querySelector(".side").classList.remove("open");
   window.scrollTo(0,0);
